@@ -533,24 +533,12 @@
           <input type="date" id="weekly-weekending" required />
         </div>
         <div class="form-group">
-          <label>Hours Worked</label>
-          <input type="number" id="weekly-hours" min="0" max="168" step="0.5" placeholder="e.g. 40" required />
-        </div>
-        <div class="form-group">
           <label>Tasks Completed</label>
           <textarea id="weekly-tasks" placeholder="List the main tasks you completed this week…" required></textarea>
         </div>
         <div class="form-group">
-          <label class="opt-label">Maintenance Issues</label>
-          <textarea id="weekly-maintenance" placeholder="Any maintenance items to report…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="opt-label">Resident Interactions</label>
-          <textarea id="weekly-residents" placeholder="Notable resident interactions or feedback…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="opt-label">Anything Needing Attention</label>
-          <textarea id="weekly-attention" placeholder="Items that need follow-up from Cole or Randy…"></textarea>
+          <label class="opt-label">Feedback</label>
+          <textarea id="weekly-feedback" placeholder="Anything you wish we could do better?"></textarea>
         </div>
         <div class="error-box" id="weekly-error"></div>
         <button type="submit" class="btn-primary" id="weekly-submit">Submit Weekly Report</button>
@@ -584,24 +572,12 @@
           <input type="month" id="monthly-month" required />
         </div>
         <div class="form-group">
-          <label>Total Hours Worked</label>
-          <input type="number" id="monthly-hours" min="0" max="744" step="0.5" placeholder="e.g. 168" required />
+          <label>Tasks Completed</label>
+          <textarea id="monthly-tasks" placeholder="Summary of what you worked on this month…" required></textarea>
         </div>
         <div class="form-group">
-          <label>PTO Days Used</label>
-          <input type="number" id="monthly-pto" min="0" max="31" step="0.5" placeholder="e.g. 2" required />
-        </div>
-        <div class="form-group">
-          <label>Open Maintenance Items</label>
-          <textarea id="monthly-maintenance" placeholder="Outstanding maintenance items or work orders…" required></textarea>
-        </div>
-        <div class="form-group">
-          <label class="opt-label">Notable Events or Incidents</label>
-          <textarea id="monthly-events" placeholder="Anything significant that happened this month…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="opt-label">Items Needing Cole/Randy Attention</label>
-          <textarea id="monthly-attention" placeholder="Escalations, decisions needed, or FYIs…"></textarea>
+          <label class="opt-label">Feedback</label>
+          <textarea id="monthly-feedback" placeholder="Anything you wish we could do better?"></textarea>
         </div>
         <div class="error-box" id="monthly-error"></div>
         <button type="submit" class="btn-primary" id="monthly-submit">Submit Monthly Report</button>
@@ -807,14 +783,11 @@
     btn.textContent = 'Submitting…';
 
     const payload = {
-      action:        'submitWeeklyReport',
-      employee:      currentEmployee,
-      weekEnding:    document.getElementById('weekly-weekending').value,
-      hoursWorked:   document.getElementById('weekly-hours').value,
-      tasks:         document.getElementById('weekly-tasks').value,
-      maintenance:   document.getElementById('weekly-maintenance').value,
-      residents:     document.getElementById('weekly-residents').value,
-      attention:     document.getElementById('weekly-attention').value
+      action:      'submitWeeklyReport',
+      employee:    currentEmployee,
+      weekEnding:  document.getElementById('weekly-weekending').value,
+      tasks:       document.getElementById('weekly-tasks').value,
+      feedback:    document.getElementById('weekly-feedback').value
     };
 
     try {
@@ -838,14 +811,11 @@
     btn.textContent = 'Submitting…';
 
     const payload = {
-      action:       'submitMonthlyReport',
-      employee:     currentEmployee,
-      month:        document.getElementById('monthly-month').value,
-      totalHours:   document.getElementById('monthly-hours').value,
-      ptoDaysUsed:  document.getElementById('monthly-pto').value,
-      maintenance:  document.getElementById('monthly-maintenance').value,
-      events:       document.getElementById('monthly-events').value,
-      attention:    document.getElementById('monthly-attention').value
+      action:    'submitMonthlyReport',
+      employee:  currentEmployee,
+      month:     document.getElementById('monthly-month').value,
+      tasks:     document.getElementById('monthly-tasks').value,
+      feedback:  document.getElementById('monthly-feedback').value
     };
 
     try {

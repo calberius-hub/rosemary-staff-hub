@@ -22,10 +22,8 @@ var SHEETS = {
 // ── Sheet column headers ──────────────────────────────────────────
 var HEADERS = {
   PTO:     ['Timestamp', 'Employee', 'Start Date', 'End Date', 'Type', 'Notes', 'Status'],
-  WEEKLY:  ['Timestamp', 'Employee', 'Week Ending', 'Hours Worked', 'Tasks Completed',
-            'Maintenance Issues', 'Resident Interactions', 'Needs Attention'],
-  MONTHLY: ['Timestamp', 'Employee', 'Month', 'Total Hours', 'PTO Days Used',
-            'Open Maintenance', 'Notable Events', 'Needs Attention']
+  WEEKLY:  ['Timestamp', 'Employee', 'Week Ending', 'Tasks Completed', 'Feedback'],
+  MONTHLY: ['Timestamp', 'Employee', 'Month', 'Tasks Completed', 'Feedback']
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -177,22 +175,16 @@ function handleSubmitWeekly_(body) {
 
   sheet.appendRow([
     timestamp,
-    body.employee    || '',
-    body.weekEnding  || '',
-    body.hoursWorked || '',
-    body.tasks       || '',
-    body.maintenance || '',
-    body.residents   || '',
-    body.attention   || ''
+    body.employee   || '',
+    body.weekEnding || '',
+    body.tasks      || '',
+    body.feedback   || ''
   ]);
 
   notifyApprovers_('Weekly Report', body.employee, {
-    weekEnding:  body.weekEnding,
-    hoursWorked: body.hoursWorked,
-    tasks:       body.tasks,
-    maintenance: body.maintenance,
-    residents:   body.residents,
-    attention:   body.attention
+    weekEnding: body.weekEnding,
+    tasks:      body.tasks,
+    feedback:   body.feedback
   });
 
   return jsonResponse_({ success: true, message: 'Weekly report submitted.' });
@@ -207,22 +199,16 @@ function handleSubmitMonthly_(body) {
 
   sheet.appendRow([
     timestamp,
-    body.employee    || '',
-    body.month       || '',
-    body.totalHours  || '',
-    body.ptoDaysUsed || '',
-    body.maintenance || '',
-    body.events      || '',
-    body.attention   || ''
+    body.employee || '',
+    body.month    || '',
+    body.tasks    || '',
+    body.feedback || ''
   ]);
 
   notifyApprovers_('Monthly Report', body.employee, {
-    month:       body.month,
-    totalHours:  body.totalHours,
-    ptoDaysUsed: body.ptoDaysUsed,
-    maintenance: body.maintenance,
-    events:      body.events,
-    attention:   body.attention
+    month:    body.month,
+    tasks:    body.tasks,
+    feedback: body.feedback
   });
 
   return jsonResponse_({ success: true, message: 'Monthly report submitted.' });
@@ -433,14 +419,11 @@ function handleGetDetailedDashboard_() {
 
     if (!reportsByMonth[monthKey]) reportsByMonth[monthKey] = { weekly: [], monthly: [] };
     reportsByMonth[monthKey].weekly.push({
-      employee:    wemp,
-      weekEnding:  weekEnding,
-      hoursWorked: String(wrow[3]),
-      tasks:       String(wrow[4]),
-      maintenance: String(wrow[5]),
-      residents:   String(wrow[6]),
-      attention:   String(wrow[7]),
-      timestamp:   String(wrow[0]).slice(0, 10)
+      employee:   wemp,
+      weekEnding: weekEnding,
+      tasks:      String(wrow[3]),
+      feedback:   String(wrow[4]),
+      timestamp:  String(wrow[0]).slice(0, 10)
     });
   }
 
@@ -463,14 +446,11 @@ function handleGetDetailedDashboard_() {
 
     if (!reportsByMonth[monthKey2]) reportsByMonth[monthKey2] = { weekly: [], monthly: [] };
     reportsByMonth[monthKey2].monthly.push({
-      employee:    memp,
-      month:       month,
-      totalHours:  String(mrow[3]),
-      ptoDaysUsed: String(mrow[4]),
-      maintenance: String(mrow[5]),
-      events:      String(mrow[6]),
-      attention:   String(mrow[7]),
-      timestamp:   String(mrow[0]).slice(0, 10)
+      employee:  memp,
+      month:     month,
+      tasks:     String(mrow[3]),
+      feedback:  String(mrow[4]),
+      timestamp: String(mrow[0]).slice(0, 10)
     });
   }
 
@@ -529,12 +509,9 @@ function notifyApprovers_(type, employee, details) {
       body = [
         employee + ' submitted a weekly report.',
         '',
-        'Week Ending:  ' + details.weekEnding,
-        'Hours Worked: ' + details.hoursWorked,
-        'Tasks:        ' + (details.tasks || '(none)'),
-        'Maintenance:  ' + (details.maintenance || '(none)'),
-        'Residents:    ' + (details.residents || '(none)'),
-        'Needs Attn:   ' + (details.attention || '(none)'),
+        'Week Ending: ' + details.weekEnding,
+        'Tasks:       ' + (details.tasks    || '(none)'),
+        'Feedback:    ' + (details.feedback || '(none)'),
         '',
         '— Rosemary Staff Hub'
       ].join('\n');
@@ -543,12 +520,9 @@ function notifyApprovers_(type, employee, details) {
       body = [
         employee + ' submitted a monthly report.',
         '',
-        'Month:          ' + details.month,
-        'Total Hours:    ' + details.totalHours,
-        'PTO Days Used:  ' + (details.ptoDaysUsed || '0'),
-        'Open Maint.:    ' + (details.maintenance || '(none)'),
-        'Notable Events: ' + (details.events || '(none)'),
-        'Needs Attn:     ' + (details.attention || '(none)'),
+        'Month:    ' + details.month,
+        'Tasks:    ' + (details.tasks    || '(none)'),
+        'Feedback: ' + (details.feedback || '(none)'),
         '',
         '— Rosemary Staff Hub'
       ].join('\n');

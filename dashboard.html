@@ -333,29 +333,24 @@
     const w = d.weekly||[], m = d.monthly||[];
 
     function weeklyTable() {
-      const thead = '<thead><tr><th>Employee</th><th>Week Ending</th><th>Hours</th><th>Tasks</th><th>Maintenance</th><th>Needs Attention</th></tr></thead>';
-      if (!w.length) return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="6">No weekly reports this month</td></tr></tbody></table></div>`;
+      const thead = '<thead><tr><th>Employee</th><th>Week Ending</th><th>Tasks Completed</th><th>Feedback</th></tr></thead>';
+      if (!w.length) return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="4">No weekly reports this month</td></tr></tbody></table></div>`;
       return `<div class="table-wrap"><table class="data-table">${thead}<tbody>${w.map(r=>`<tr>
         <td><strong>${esc(r.employee)}</strong></td>
         <td>${esc(fmtDate(r.weekEnding))}</td>
-        <td>${esc(r.hoursWorked)}</td>
         <td class="truncate" title="${esc(r.tasks)}">${esc(r.tasks)||'—'}</td>
-        <td class="truncate" title="${esc(r.maintenance)}">${esc(r.maintenance)||'—'}</td>
-        <td class="truncate" title="${esc(r.attention)}">${esc(r.attention)||'—'}</td>
+        <td class="truncate" title="${esc(r.feedback)}">${esc(r.feedback)||'—'}</td>
       </tr>`).join('')}</tbody></table></div>`;
     }
 
     function monthlyTable() {
-      const thead = '<thead><tr><th>Employee</th><th>Month</th><th>Hours</th><th>PTO Days</th><th>Open Maint.</th><th>Notable Events</th><th>Needs Attention</th></tr></thead>';
-      if (!m.length) return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="7">No monthly reports this month</td></tr></tbody></table></div>`;
+      const thead = '<thead><tr><th>Employee</th><th>Month</th><th>Tasks Completed</th><th>Feedback</th></tr></thead>';
+      if (!m.length) return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="4">No monthly reports this month</td></tr></tbody></table></div>`;
       return `<div class="table-wrap"><table class="data-table">${thead}<tbody>${m.map(r=>`<tr>
         <td><strong>${esc(r.employee)}</strong></td>
         <td>${esc(r.month)}</td>
-        <td>${esc(r.totalHours)}</td>
-        <td>${esc(r.ptoDaysUsed)||'0'}</td>
-        <td class="truncate" title="${esc(r.maintenance)}">${esc(r.maintenance)||'—'}</td>
-        <td class="truncate" title="${esc(r.events)}">${esc(r.events)||'—'}</td>
-        <td class="truncate" title="${esc(r.attention)}">${esc(r.attention)||'—'}</td>
+        <td class="truncate" title="${esc(r.tasks)}">${esc(r.tasks)||'—'}</td>
+        <td class="truncate" title="${esc(r.feedback)}">${esc(r.feedback)||'—'}</td>
       </tr>`).join('')}</tbody></table></div>`;
     }
 
