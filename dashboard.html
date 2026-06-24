@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rosemary Staff Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f0f;
+      color: #f0f0f0;
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 32px 24px 64px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      background: #5a8a5e;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -0.5px;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #f0f0f0;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .refresh-info {
+      font-size: 12px;
+      color: #444;
+      text-align: right;
+    }
+
+    #last-updated {
+      color: #666;
+    }
+
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 36px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    /* ── Tables ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: #1a1a1a;
+      color: #666;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #181818;
+      color: #c0c0c0;
+      vertical-align: top;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #141414; }
+
+    .data-table-wrap {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* ── Status badges ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge-pending   { background: #2d2200; color: #e0a800; border: 1px solid #4d3800; }
+    .badge-approved  { background: #0e2b10; color: #4caf50; border: 1px solid #1e4f21; }
+    .badge-submitted { background: #0d1f3c; color: #5b9cf6; border: 1px solid #1a3a6c; }
+    .badge-yes       { background: #0e2b10; color: #4caf50; border: 1px solid #1e4f21; }
+    .badge-no        { background: #2a1010; color: #e05050; border: 1px solid #4f1e1e; }
+
+    /* ── Employee grid ── */
+    .emp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .emp-card {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 18px 16px;
+    }
+
+    .emp-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #f0f0f0;
+      margin-bottom: 10px;
+    }
+
+    .emp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .emp-row:last-child { margin-bottom: 0; }
+
+    /* ── Empty & loading ── */
+    .empty-row td {
+      text-align: center;
+      color: #444;
+      padding: 28px;
+      font-style: italic;
+    }
+
+    .loading-overlay {
+      text-align: center;
+      padding: 48px 0;
+      color: #444;
+      font-size: 14px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .error-msg {
+      background: #1a0a0a;
+      border: 1px solid #3a1010;
+      border-radius: 10px;
+      padding: 16px;
+      color: #c05050;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* ── Notes truncation ── */
+    .truncate {
+      max-width: 240px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">RV</div>
+    <div>
+      <div class="header-title">Rosemary Staff Dashboard</div>
+      <div class="header-sub">Admin view · auto-refreshes every 5 min</div>
+    </div>
+  </div>
+  <div class="refresh-info">
+    Last updated<br><span id="last-updated">—</span>
+  </div>
+</div>
+
+<div id="main-content">
+  <div class="loading-overlay">Loading dashboard…</div>
+</div>
+
+<script>
+  // ── CONFIG ────────────────────────────────────────────────────
+  const WEB_APP_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+  const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+  const EMPLOYEES = ['Austin', 'Jaimie', 'Lindsey', 'Nathan'];
+
+  // ── Helpers ───────────────────────────────────────────────────
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function formatDate(str) {
+    if (!str) return '—';
+    const d = new Date(str + (str.length === 10 ? 'T00:00:00' : ''));
+    if (isNaN(d)) return str;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function badge(text, cls) {
+    return `<span class="badge badge-${cls}">${esc(text)}</span>`;
+  }
+
+  // ── Render helpers ────────────────────────────────────────────
+  function renderPTOTable(pendingPTO) {
+    if (!pendingPTO || pendingPTO.length === 0) {
+      return `<div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th>
+          </tr></thead>
+          <tbody><tr class="empty-row"><td colspan="6">No pending PTO requests 🎉</td></tr></tbody>
+        </table>
+      </div>`;
+    }
+
+    const rows = pendingPTO.map(r => `
+      <tr>
+        <td><strong>${esc(r.employee)}</strong></td>
+        <td>${esc(formatDate(r.startDate))}</td>
+        <td>${esc(formatDate(r.endDate))}</td>
+        <td>${esc(r.type)}</td>
+        <td class="truncate" title="${esc(r.notes)}">${esc(r.notes) || '<span style="color:#444">—</span>'}</td>
+        <td>${badge(r.status || 'Pending', 'pending')}</td>
+      </tr>`).join('');
+
+    return `<div class="data-table-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  function renderEmployeeGrid(weeklyStatus, monthlyStatus) {
+    const cards = EMPLOYEES.map(emp => {
+      const weekly  = weeklyStatus  && weeklyStatus[emp];
+      const monthly = monthlyStatus && monthlyStatus[emp];
+      return `<div class="emp-card">
+        <div class="emp-name">${esc(emp)}</div>
+        <div class="emp-row">
+          <span>Weekly Report</span>
+          ${weekly ? badge('Submitted', 'yes') : badge('Missing', 'no')}
+        </div>
+        <div class="emp-row">
+          <span>Monthly Report</span>
+          ${monthly ? badge('Submitted', 'yes') : badge('Missing', 'no')}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="emp-grid">${cards}</div>`;
+  }
+
+  function renderDashboard(data) {
+    const now = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    document.getElementById('last-updated').textContent = now;
+
+    document.getElementById('main-content').innerHTML = `
+      <div class="section">
+        <div class="section-title">⏳ Pending PTO Requests (${(data.pendingPTO || []).length})</div>
+        ${renderPTOTable(data.pendingPTO)}
+      </div>
+      <div class="section">
+        <div class="section-title">📋 Report Submission Status</div>
+        ${renderEmployeeGrid(data.weeklyStatus, data.monthlyStatus)}
+      </div>
+    `;
+  }
+
+  function renderError(msg) {
+    document.getElementById('main-content').innerHTML = `
+      <div class="error-msg">⚠️ ${esc(msg)}</div>`;
+  }
+
+  // ── Fetch & render ────────────────────────────────────────────
+  async function loadDashboard() {
+    if (WEB_APP_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+      // Demo mode — show placeholder data
+      renderDashboard({
+        pendingPTO: [
+          { employee: 'Austin', startDate: '2024-07-04', endDate: '2024-07-08', type: 'Vacation', notes: 'Family trip', status: 'Pending' },
+          { employee: 'Lindsey', startDate: '2024-07-15', endDate: '2024-07-15', type: 'Personal', notes: '', status: 'Pending' }
+        ],
+        weeklyStatus:  { Austin: true,  Jaimie: false, Lindsey: true,  Nathan: false },
+        monthlyStatus: { Austin: false, Jaimie: false, Lindsey: false, Nathan: false }
+      });
+      return;
+    }
+
+    try {
+      const res  = await fetch(WEB_APP_URL + '?action=getDashboard');
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Unknown error');
+      renderDashboard(data);
+    } catch (err) {
+      renderError('Could not load dashboard: ' + err.message);
+    }
+  }
+
+  // ── Init & auto-refresh ───────────────────────────────────────
+  loadDashboard();
+  setInterval(loadDashboard, REFRESH_INTERVAL_MS);
+</script>
+</body>
+</html>

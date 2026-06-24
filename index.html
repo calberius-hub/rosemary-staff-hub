@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rosemary Staff Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ivory:   #f5f1ea;
+      --sage:    #5a8a5e;
+      --sage-dk: #4a7550;
+      --gold:    #8c7342;
+      --gold-lt: #a8884f;
+      --ink:     #2c2820;
+      --muted:   #7a7060;
+      --border:  #ddd6c8;
+      --card-bg: #ffffff;
+      --shadow:  0 2px 12px rgba(44,40,32,0.10);
+    }
+
+    html, body {
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Screen management ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px 48px;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      text-align: center;
+      padding: 40px 16px 32px;
+    }
+
+    .logo-mark {
+      display: inline-block;
+      width: 64px;
+      height: 64px;
+      background: var(--sage);
+      border-radius: 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 28px;
+      color: #fff;
+      line-height: 64px;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .site-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 28px;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+
+    .site-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ── Back button ── */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--sage);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 12px 0 0;
+      margin-bottom: 4px;
+    }
+    .back-btn:hover { color: var(--sage-dk); }
+
+    /* ── Section heading ── */
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 22px;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    /* ── Name buttons (Home screen) ── */
+    .name-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .name-btn {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .name-btn:hover {
+      background: var(--sage);
+      color: #fff;
+      border-color: var(--sage);
+    }
+    .name-btn:active { transform: scale(0.97); }
+
+    /* ── Dashboard greeting ── */
+    .dashboard-greeting {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .dashboard-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* ── Action cards ── */
+    .action-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .action-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      text-decoration: none;
+      color: inherit;
+      border-left: 4px solid var(--sage);
+    }
+    .action-card:hover {
+      background: #fdf9f4;
+      border-color: var(--sage);
+    }
+    .action-card:active { transform: scale(0.98); }
+
+    .action-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .action-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .action-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Submissions list ── */
+    .submissions-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .submissions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .submission-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      box-shadow: 0 1px 4px rgba(44,40,32,0.06);
+    }
+
+    .submission-type {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .submission-date {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .status-pending  { background: #fff4e0; color: #9c6b00; }
+    .status-approved { background: #e6f3e7; color: #3a6b3e; }
+    .status-rejected { background: #fce8e8; color: #8b2020; }
+    .status-submitted{ background: #e8edf8; color: #34508a; }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .loading-text {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 16px 0;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── Forms ── */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: var(--ivory);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--sage);
+    }
+    input[readonly] {
+      background: #ece8e0;
+      color: var(--muted);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.5;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      background: var(--sage);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { background: var(--sage-dk); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { background: #b0c4b2; cursor: not-allowed; transform: none; }
+
+    /* ── Confirmation message ── */
+    .confirm-box {
+      background: #e6f3e7;
+      border: 1.5px solid #b3d6b5;
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .confirm-icon { font-size: 36px; margin-bottom: 10px; }
+    .confirm-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #2d6e31;
+      margin-bottom: 8px;
+    }
+    .confirm-msg { font-size: 14px; color: #3a6b3e; line-height: 1.5; }
+    .confirm-back {
+      margin-top: 20px;
+      background: none;
+      border: 1.5px solid var(--sage);
+      color: var(--sage);
+      border-radius: 10px;
+      padding: 10px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .confirm-back:hover { background: var(--sage); color: #fff; }
+
+    /* ── Error message ── */
+    .error-box {
+      background: #fce8e8;
+      border: 1.5px solid #f0b0b0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #8b2020;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      padding: 24px 0 8px;
+      font-size: 11px;
+      color: var(--border);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Optional field label ── */
+    .opt-label::after {
+      content: ' (optional)';
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════ HOME SCREEN ════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="site-header">
+    <div class="logo-mark">RV</div>
+    <div class="site-title">Rosemary Villas</div>
+    <div class="site-subtitle">Staff Hub</div>
+  </div>
+  <div class="page">
+    <div class="section-heading">Who are you?</div>
+    <div class="name-grid">
+      <button class="name-btn" onclick="selectEmployee('Austin')">Austin</button>
+      <button class="name-btn" onclick="selectEmployee('Jaimie')">Jaimie</button>
+      <button class="name-btn" onclick="selectEmployee('Lindsey')">Lindsey</button>
+      <button class="name-btn" onclick="selectEmployee('Nathan')">Nathan</button>
+    </div>
+  </div>
+  <div class="site-footer">Rosemary Villas · Staff Portal</div>
+</div>
+
+<!-- ════════════════════ DASHBOARD SCREEN ════════════════════ -->
+<div id="screen-dashboard" class="screen">
+  <div class="site-header" style="padding-bottom:16px;">
+    <div class="logo-mark">RV</div>
+  </div>
+  <div class="page">
+    <button class="back-btn" onclick="showScreen('home')">← Back</button>
+    <div class="dashboard-greeting" id="dash-greeting">Hi, Austin</div>
+    <div class="dashboard-sub">What would you like to do today?</div>
+
+    <div class="action-cards">
+      <div class="action-card" onclick="showScreen('pto')">
+        <div class="action-icon">🏖️</div>
+        <div>
+          <div class="action-label">Request PTO</div>
+          <div class="action-desc">Vacation, personal, or sick time</div>
+        </div>
+      </div>
+      <div class="action-card" onclick="showScreen('weekly')">
+        <div class="action-icon">📋</div>
+        <div>
+          <div class="action-label">Weekly Report</div>
+          <div class="action-desc">Hours, tasks, and notes for the week</div>
+        </div>
+      </div>
+      <div class="action-card" onclick="showScreen('monthly')">
+        <div class="action-icon">📅</div>
+        <div>
+          <div class="action-label">Monthly Report</div>
+          <div class="action-desc">Monthly summary for Cole &amp; Randy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="submissions-heading">My Recent Submissions</div>
+    <div class="submissions-list" id="submissions-list">
+      <div class="loading-text">Loading…</div>
+    </div>
+  </div>
+  <div class="site-footer">Rosemary Villas · Staff Portal</div>
+</div>
+
+<!-- ════════════════════ PTO REQUEST SCREEN ════════════════════ -->
+<div id="screen-pto" class="screen">
+  <div class="site-header" style="padding-bottom:16px;">
+    <div class="logo-mark">RV</div>
+  </div>
+  <div class="page">
+    <button class="back-btn" onclick="showScreen('dashboard')">← Dashboard</button>
+    <div class="section-heading">Request PTO</div>
+    <div class="form-card" id="pto-form-wrap">
+      <form id="pto-form" onsubmit="submitPTO(event)">
+        <div class="form-group">
+          <label>Employee</label>
+          <input type="text" id="pto-employee" readonly />
+        </div>
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" id="pto-start" required />
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" id="pto-end" required />
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="pto-type" required>
+            <option value="">Select type…</option>
+            <option value="Vacation">Vacation</option>
+            <option value="Personal">Personal</option>
+            <option value="Sick">Sick</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="opt-label">Notes</label>
+          <textarea id="pto-notes" placeholder="Anything Cole or Randy should know…"></textarea>
+        </div>
+        <div class="error-box" id="pto-error"></div>
+        <button type="submit" class="btn-primary" id="pto-submit">Submit PTO Request</button>
+      </form>
+    </div>
+    <div class="confirm-box" id="pto-confirm" style="display:none;">
+      <div class="confirm-icon">✅</div>
+      <div class="confirm-title">Request Submitted!</div>
+      <div class="confirm-msg">We'll notify Cole &amp; Randy for approval. You'll hear back soon.</div>
+      <button class="confirm-back" onclick="showScreen('dashboard')">Back to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ WEEKLY REPORT SCREEN ════════════════════ -->
+<div id="screen-weekly" class="screen">
+  <div class="site-header" style="padding-bottom:16px;">
+    <div class="logo-mark">RV</div>
+  </div>
+  <div class="page">
+    <button class="back-btn" onclick="showScreen('dashboard')">← Dashboard</button>
+    <div class="section-heading">Weekly Report</div>
+    <div class="form-card" id="weekly-form-wrap">
+      <form id="weekly-form" onsubmit="submitWeekly(event)">
+        <div class="form-group">
+          <label>Employee</label>
+          <input type="text" id="weekly-employee" readonly />
+        </div>
+        <div class="form-group">
+          <label>Week Ending</label>
+          <input type="date" id="weekly-weekending" required />
+        </div>
+        <div class="form-group">
+          <label>Hours Worked</label>
+          <input type="number" id="weekly-hours" min="0" max="168" step="0.5" placeholder="e.g. 40" required />
+        </div>
+        <div class="form-group">
+          <label>Tasks Completed</label>
+          <textarea id="weekly-tasks" placeholder="List the main tasks you completed this week…" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="opt-label">Maintenance Issues</label>
+          <textarea id="weekly-maintenance" placeholder="Any maintenance items to report…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="opt-label">Resident Interactions</label>
+          <textarea id="weekly-residents" placeholder="Notable resident interactions or feedback…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="opt-label">Anything Needing Attention</label>
+          <textarea id="weekly-attention" placeholder="Items that need follow-up from Cole or Randy…"></textarea>
+        </div>
+        <div class="error-box" id="weekly-error"></div>
+        <button type="submit" class="btn-primary" id="weekly-submit">Submit Weekly Report</button>
+      </form>
+    </div>
+    <div class="confirm-box" id="weekly-confirm" style="display:none;">
+      <div class="confirm-icon">✅</div>
+      <div class="confirm-title">Report Submitted!</div>
+      <div class="confirm-msg">Your weekly report has been recorded. Thank you!</div>
+      <button class="confirm-back" onclick="showScreen('dashboard')">Back to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ MONTHLY REPORT SCREEN ════════════════════ -->
+<div id="screen-monthly" class="screen">
+  <div class="site-header" style="padding-bottom:16px;">
+    <div class="logo-mark">RV</div>
+  </div>
+  <div class="page">
+    <button class="back-btn" onclick="showScreen('dashboard')">← Dashboard</button>
+    <div class="section-heading">Monthly Report</div>
+    <div class="form-card" id="monthly-form-wrap">
+      <form id="monthly-form" onsubmit="submitMonthly(event)">
+        <div class="form-group">
+          <label>Employee</label>
+          <input type="text" id="monthly-employee" readonly />
+        </div>
+        <div class="form-group">
+          <label>Month</label>
+          <input type="month" id="monthly-month" required />
+        </div>
+        <div class="form-group">
+          <label>Total Hours Worked</label>
+          <input type="number" id="monthly-hours" min="0" max="744" step="0.5" placeholder="e.g. 168" required />
+        </div>
+        <div class="form-group">
+          <label>PTO Days Used</label>
+          <input type="number" id="monthly-pto" min="0" max="31" step="0.5" placeholder="e.g. 2" required />
+        </div>
+        <div class="form-group">
+          <label>Open Maintenance Items</label>
+          <textarea id="monthly-maintenance" placeholder="Outstanding maintenance items or work orders…" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="opt-label">Notable Events or Incidents</label>
+          <textarea id="monthly-events" placeholder="Anything significant that happened this month…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="opt-label">Items Needing Cole/Randy Attention</label>
+          <textarea id="monthly-attention" placeholder="Escalations, decisions needed, or FYIs…"></textarea>
+        </div>
+        <div class="error-box" id="monthly-error"></div>
+        <button type="submit" class="btn-primary" id="monthly-submit">Submit Monthly Report</button>
+      </form>
+    </div>
+    <div class="confirm-box" id="monthly-confirm" style="display:none;">
+      <div class="confirm-icon">✅</div>
+      <div class="confirm-title">Report Submitted!</div>
+      <div class="confirm-msg">Your monthly report has been recorded. Thank you!</div>
+      <button class="confirm-back" onclick="showScreen('dashboard')">Back to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────────
+  const WEB_APP_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+
+  // ── State ────────────────────────────────────────────────────────
+  let currentEmployee = null;
+
+  // ── Helpers ──────────────────────────────────────────────────────
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function lastFriday() {
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun…6=Sat
+    const diff = day >= 5 ? day - 5 : day + 2; // days since last Friday
+    d.setDate(d.getDate() - diff);
+    return d.toISOString().split('T')[0];
+  }
+
+  function currentMonth() {
+    const d = new Date();
+    return d.toISOString().slice(0, 7); // YYYY-MM
+  }
+
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hideError(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'none';
+  }
+
+  function setSubmitting(btnId, submitting) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = submitting;
+    btn.textContent = submitting ? 'Submitting…' : btn.dataset.label;
+  }
+
+  // ── Employee selection ────────────────────────────────────────────
+  function selectEmployee(name) {
+    currentEmployee = name;
+
+    // Dashboard
+    document.getElementById('dash-greeting').textContent = 'Hi, ' + name + ' 👋';
+
+    // Pre-fill all employee fields
+    ['pto', 'weekly', 'monthly'].forEach(form => {
+      const el = document.getElementById(form + '-employee');
+      if (el) el.value = name;
+    });
+
+    // Default dates
+    document.getElementById('weekly-weekending').value = lastFriday();
+    document.getElementById('monthly-month').value = currentMonth();
+
+    // Reset forms
+    resetForms();
+
+    showScreen('dashboard');
+    loadSubmissions(name);
+  }
+
+  function resetForms() {
+    ['pto-form', 'weekly-form', 'monthly-form'].forEach(id => {
+      const f = document.getElementById(id);
+      if (f) {
+        // Reset non-readonly fields
+        f.querySelectorAll('input:not([readonly]), select, textarea').forEach(el => {
+          if (el.type !== 'date' && el.type !== 'month') el.value = '';
+        });
+      }
+    });
+    // Hide confirms
+    ['pto', 'weekly', 'monthly'].forEach(t => {
+      const c = document.getElementById(t + '-confirm');
+      const w = document.getElementById(t + '-form-wrap');
+      if (c) { c.style.display = 'none'; }
+      if (w) { w.style.display = 'block'; }
+      hideError(t + '-error');
+    });
+    // Re-set button labels
+    ['pto-submit','weekly-submit','monthly-submit'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) { btn.disabled = false; }
+    });
+    document.getElementById('pto-submit').textContent = 'Submit PTO Request';
+    document.getElementById('weekly-submit').textContent = 'Submit Weekly Report';
+    document.getElementById('monthly-submit').textContent = 'Submit Monthly Report';
+  }
+
+  // ── Load submissions ──────────────────────────────────────────────
+  async function loadSubmissions(employee) {
+    const list = document.getElementById('submissions-list');
+    list.innerHTML = '<div class="loading-text">Loading…</div>';
+
+    if (WEB_APP_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+      list.innerHTML = '<div class="empty-state">Connect the backend to see submissions.</div>';
+      return;
+    }
+
+    try {
+      const url = WEB_APP_URL + '?action=getSubmissions&employee=' + encodeURIComponent(employee);
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data.submissions || data.submissions.length === 0) {
+        list.innerHTML = '<div class="empty-state">No submissions yet.</div>';
+        return;
+      }
+
+      list.innerHTML = '';
+      data.submissions.forEach(sub => {
+        const statusClass = 'status-' + (sub.status || 'submitted').toLowerCase().replace(/\s+/g, '');
+        const item = document.createElement('div');
+        item.className = 'submission-item';
+        item.innerHTML = `
+          <div>
+            <div class="submission-type">${esc(sub.type)}</div>
+            <div class="submission-date">${esc(sub.date)}</div>
+          </div>
+          <span class="status-badge ${statusClass}">${esc(sub.status || 'Submitted')}</span>
+        `;
+        list.appendChild(item);
+      });
+    } catch (err) {
+      list.innerHTML = '<div class="empty-state">Could not load submissions.</div>';
+    }
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── POST helper ───────────────────────────────────────────────────
+  async function postToBackend(payload) {
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  }
+
+  // ── Submit PTO ────────────────────────────────────────────────────
+  async function submitPTO(e) {
+    e.preventDefault();
+    hideError('pto-error');
+
+    const start = document.getElementById('pto-start').value;
+    const end   = document.getElementById('pto-end').value;
+    if (end < start) {
+      showError('pto-error', 'End date must be on or after start date.');
+      return;
+    }
+
+    const btn = document.getElementById('pto-submit');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const payload = {
+      action:   'submitPTO',
+      employee: currentEmployee,
+      startDate: start,
+      endDate:   end,
+      type:      document.getElementById('pto-type').value,
+      notes:     document.getElementById('pto-notes').value
+    };
+
+    try {
+      if (WEB_APP_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+        await postToBackend(payload);
+      }
+      document.getElementById('pto-form-wrap').style.display = 'none';
+      document.getElementById('pto-confirm').style.display = 'block';
+    } catch (err) {
+      showError('pto-error', 'Submission failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit PTO Request';
+    }
+  }
+
+  // ── Submit Weekly Report ──────────────────────────────────────────
+  async function submitWeekly(e) {
+    e.preventDefault();
+    hideError('weekly-error');
+
+    const btn = document.getElementById('weekly-submit');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const payload = {
+      action:        'submitWeeklyReport',
+      employee:      currentEmployee,
+      weekEnding:    document.getElementById('weekly-weekending').value,
+      hoursWorked:   document.getElementById('weekly-hours').value,
+      tasks:         document.getElementById('weekly-tasks').value,
+      maintenance:   document.getElementById('weekly-maintenance').value,
+      residents:     document.getElementById('weekly-residents').value,
+      attention:     document.getElementById('weekly-attention').value
+    };
+
+    try {
+      if (WEB_APP_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+        await postToBackend(payload);
+      }
+      document.getElementById('weekly-form-wrap').style.display = 'none';
+      document.getElementById('weekly-confirm').style.display = 'block';
+    } catch (err) {
+      showError('weekly-error', 'Submission failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Weekly Report';
+    }
+  }
+
+  // ── Submit Monthly Report ─────────────────────────────────────────
+  async function submitMonthly(e) {
+    e.preventDefault();
+    hideError('monthly-error');
+
+    const btn = document.getElementById('monthly-submit');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const payload = {
+      action:       'submitMonthlyReport',
+      employee:     currentEmployee,
+      month:        document.getElementById('monthly-month').value,
+      totalHours:   document.getElementById('monthly-hours').value,
+      ptoDaysUsed:  document.getElementById('monthly-pto').value,
+      maintenance:  document.getElementById('monthly-maintenance').value,
+      events:       document.getElementById('monthly-events').value,
+      attention:    document.getElementById('monthly-attention').value
+    };
+
+    try {
+      if (WEB_APP_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+        await postToBackend(payload);
+      }
+      document.getElementById('monthly-form-wrap').style.display = 'none';
+      document.getElementById('monthly-confirm').style.display = 'block';
+    } catch (err) {
+      showError('monthly-error', 'Submission failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Monthly Report';
+    }
+  }
+</script>
+</body>
+</html>
