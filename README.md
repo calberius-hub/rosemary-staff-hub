@@ -17,65 +17,74 @@ A mobile-first web app for Rosemary Villas employees to submit PTO requests, wee
 
 ## Setup
 
-### 1. Create the Google Sheet
+> **No hardcoded secrets.** All sensitive values (emails, spreadsheet ID) live in Apps Script Script Properties — never in source files.
 
-1. Go to [Google Sheets](https://sheets.google.com) and create a new spreadsheet named **Rosemary Staff Hub**
-2. Copy the spreadsheet ID from the URL (the long string between `/d/` and `/edit`)
-3. Open `Code.js` and paste the ID into `CONFIG.spreadsheetId`
-   - Or: in Apps Script, go to **Project Settings → Script Properties** and add `SPREADSHEET_ID`
-
-> The backend will auto-create three sheets on first use:
-> - **PTO Requests** — Timestamp, Employee, Start Date, End Date, Type, Notes, Status
-> - **Weekly Reports** — Timestamp, Employee, Week Ending, Hours Worked, Tasks, Maintenance, Residents, Needs Attention
-> - **Monthly Reports** — Timestamp, Employee, Month, Total Hours, PTO Days Used, Open Maintenance, Notable Events, Needs Attention
-
-### 2. Deploy the Apps Script
+### 1. Deploy Code.js to Apps Script
 
 1. Go to [script.google.com](https://script.google.com) and create a new project named **Rosemary Staff Hub**
 2. Paste the contents of `Code.js` into the editor (replace the default `myFunction`)
 3. Paste `appsscript.json` content via **Project Settings → Edit appsscript.json**
-4. Go to **Deploy → New Deployment**
+
+### 2. Set Script Properties
+
+In Apps Script → **Project Settings → Script Properties**, add:
+
+| Property | Value |
+|---|---|
+| `APPROVER_EMAILS` | `calberius@sds-ar.com,ralberius@sds-ar.com` |
+
+> `SPREADSHEET_ID` is set **automatically** in the next step — do not add it manually yet.
+
+See `SCRIPT_PROPERTIES.md` for full details.
+
+### 3. Run the one-time setup function
+
+In the Apps Script editor:
+1. Select `setupRosemaryStaffHub_` from the function dropdown
+2. Click **Run**
+3. Authorize permissions when prompted
+4. Check the **Execution Log** — it will print the Spreadsheet URL
+
+This creates the **Rosemary Staff Hub** Google Spreadsheet with three pre-formatted sheets:
+- **PTO Requests** — Timestamp, Employee, Start Date, End Date, Type, Notes, Status
+- **Weekly Reports** — Timestamp, Employee, Week Ending, Hours Worked, Tasks Completed, Maintenance Issues, Resident Interactions, Needs Attention
+- **Monthly Reports** — Timestamp, Employee, Month, Total Hours, PTO Days Used, Open Maintenance, Notable Events, Needs Attention
+
+And saves `SPREADSHEET_ID` to Script Properties automatically.
+
+### 4. Deploy as a Web App
+
+1. Go to **Deploy → New Deployment**
    - Type: **Web App**
    - Execute as: **Me**
    - Who has access: **Anyone**
-5. Copy the Web App URL
+2. Click **Deploy** and copy the Web App URL
 
-### 3. Set Script Properties (optional but recommended)
+### 5. Connect the Frontend
 
-In Apps Script → **Project Settings → Script Properties**, add:
-- `APPROVER_EMAIL` — email address for PTO notifications (e.g., cole@example.com)
-
-You can comma-separate multiple emails in a custom edit to `notifyApprovers_()`.
-
-### 4. Connect the Frontend
-
-In `index.html`, replace the placeholder at the top of the `<script>` block:
+In `index.html` **and** `dashboard.html`, replace the placeholder at the top of the `<script>` block:
 ```js
 const WEB_APP_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
 ```
 with your deployed Web App URL.
 
-Do the same in `dashboard.html`.
-
-### 5. Push to GitHub
+### 6. Push to GitHub
 
 ```bash
 cd ~/projects/rosemary-staff-hub
-git init
-git remote add origin https://github.com/YOUR_ORG/rosemary-staff-hub.git
 git add .
-git commit -m "feat: initial Rosemary Staff Hub"
-git push -u origin main
+git commit -m "feat: wire in web app URL"
+git push origin main
 ```
 
-### 6. Connect Netlify
+### 7. Connect Netlify
 
 1. Log in to [Netlify](https://netlify.com) and click **Add new site → Import an existing project**
-2. Connect your GitHub repo
+2. Connect the `calberius-hub/rosemary-staff-hub` GitHub repo
 3. Build settings:
    - **Build command:** *(leave blank)*
    - **Publish directory:** `.`
-4. Deploy! Set a custom domain if desired (e.g., `rosemary-staff.netlify.app`)
+4. Deploy and set the custom domain: `rosemary-staff.netlify.app`
 
 ---
 
@@ -116,3 +125,4 @@ git push -u origin main
 | `netlify.toml` | Netlify publish config |
 | `README.md` | This file |
 | `CLAUDE.md` | Instructions for future coding agents |
+| `SCRIPT_PROPERTIES.md` | Script Properties setup guide for Apps Script |

@@ -1,12 +1,16 @@
 // ═══════════════════════════════════════════════════════════════
 //  Rosemary Staff Hub — Google Apps Script Backend
-//  Deploy as a Web App: Execute as USER_DEPLOYING, Anyone (anonymous)
+//  Deploy as a Web App: Execute as Me (USER_DEPLOYING), Anyone (anonymous)
 // ═══════════════════════════════════════════════════════════════
-
-var CONFIG = {
-  spreadsheetId: 'PASTE_SPREADSHEET_ID_HERE',
-  approverEmail: 'PASTE_APPROVER_EMAIL_HERE'  // overridden by Script Property APPROVER_EMAIL if set
-};
+//
+//  CONFIG uses Script Properties at runtime — no hardcoded secrets.
+//  Run setupRosemaryStaffHub_() once to create the Google Sheet
+//  and store its ID automatically.
+//
+//  Script Properties required:
+//    SPREADSHEET_ID  — auto-set by setupRosemaryStaffHub_()
+//    APPROVER_EMAILS — comma-separated list set manually in Project Settings
+// ═══════════════════════════════════════════════════════════════
 
 // ── Sheet name constants ──────────────────────────────────────────
 var SHEETS = {
@@ -23,6 +27,66 @@ var HEADERS = {
   MONTHLY: ['Timestamp', 'Employee', 'Month', 'Total Hours', 'PTO Days Used',
             'Open Maintenance', 'Notable Events', 'Needs Attention']
 };
+
+// ════════════════════════════════════════════════════════════════
+//  setupRosemaryStaffHub_ — ONE-TIME SETUP FUNCTION
+//  Run this once from the Apps Script editor.
+//  It creates the Google Spreadsheet, sets up all three sheets,
+//  and saves the Spreadsheet ID to Script Properties automatically.
+// ════════════════════════════════════════════════════════════════
+function setupRosemaryStaffHub_() {
+  var props = PropertiesService.getScriptProperties();
+
+  // Check if already set up
+  var existingId = props.getProperty('SPREADSHEET_ID');
+  if (existingId) {
+    Logger.log('⚠️  setupRosemaryStaffHub_: SPREADSHEET_ID already set (' + existingId + '). Delete the Script Property and re-run if you want to start fresh.');
+    return;
+  }
+
+  // Create the spreadsheet
+  var ss = SpreadsheetApp.create('Rosemary Staff Hub');
+  var spreadsheetId = ss.getId();
+
+  // Store ID in Script Properties
+  props.setProperty('SPREADSHEET_ID', spreadsheetId);
+  Logger.log('✅ SPREADSHEET_ID saved to Script Properties: ' + spreadsheetId);
+
+  // Remove the default blank Sheet1
+  var defaultSheet = ss.getSheets()[0];
+
+  // Create the three sheets with headers
+  var sheetConfigs = [
+    { name: SHEETS.PTO,     headers: HEADERS.PTO },
+    { name: SHEETS.WEEKLY,  headers: HEADERS.WEEKLY },
+    { name: SHEETS.MONTHLY, headers: HEADERS.MONTHLY }
+  ];
+
+  sheetConfigs.forEach(function(cfg) {
+    var sheet = ss.insertSheet(cfg.name);
+    sheet.appendRow(cfg.headers);
+    var headerRange = sheet.getRange(1, 1, 1, cfg.headers.length);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#5a8a5e');
+    headerRange.setFontColor('#ffffff');
+    sheet.setFrozenRows(1);
+    Logger.log('✅ Created sheet: ' + cfg.name);
+  });
+
+  // Delete the default blank sheet that was created with the spreadsheet
+  ss.deleteSheet(defaultSheet);
+
+  Logger.log('');
+  Logger.log('════════════════════════════════════════════');
+  Logger.log('✅ Rosemary Staff Hub setup complete!');
+  Logger.log('   Spreadsheet URL: ' + ss.getUrl());
+  Logger.log('════════════════════════════════════════════');
+  Logger.log('Next steps:');
+  Logger.log('  1. Deploy this script as a Web App (Deploy → New Deployment)');
+  Logger.log('     Execute as: Me | Who has access: Anyone');
+  Logger.log('  2. Copy the Web App URL into WEB_APP_URL in index.html and dashboard.html');
+  Logger.log('  3. Ensure APPROVER_EMAILS Script Property is set (Project Settings → Script Properties)');
+}
 
 // ════════════════════════════════════════════════════════════════
 //  doPost — handle form submissions
@@ -264,15 +328,23 @@ function handleGetDashboard_() {
 
 // ════════════════════════════════════════════════════════════════
 //  notifyApprovers_
+//  Reads APPROVER_EMAILS from Script Properties (comma-separated).
+//  Sends one email to each address.
 // ════════════════════════════════════════════════════════════════
 function notifyApprovers_(type, employee, details) {
   try {
-    // Use Script Property if set, otherwise fall back to CONFIG
-    var recipientEmail = PropertiesService.getScriptProperties().getProperty('APPROVER_EMAIL')
-                         || CONFIG.approverEmail;
+    var rawEmails = PropertiesService.getScriptProperties().getProperty('APPROVER_EMAILS') || '';
 
-    if (!recipientEmail || recipientEmail === 'PASTE_APPROVER_EMAIL_HERE') {
-      Logger.log('notifyApprovers_: APPROVER_EMAIL not configured — skipping email.');
+    if (!rawEmails) {
+      Logger.log('notifyApprovers_: APPROVER_EMAILS Script Property not set — skipping email.');
+      return;
+    }
+
+    // Split on comma, trim whitespace, filter empties
+    var recipients = rawEmails.split(',').map(function(e) { return e.trim(); }).filter(Boolean);
+
+    if (recipients.length === 0) {
+      Logger.log('notifyApprovers_: No valid recipients found in APPROVER_EMAILS — skipping email.');
       return;
     }
 
@@ -291,13 +363,14 @@ function notifyApprovers_(type, employee, details) {
       '— Rosemary Staff Hub'
     ].join('\n');
 
-    MailApp.sendEmail({
-      to:      recipientEmail,
-      subject: subject,
-      body:    body
+    recipients.forEach(function(recipient) {
+      MailApp.sendEmail({
+        to:      recipient,
+        subject: subject,
+        body:    body
+      });
+      Logger.log('Approval email sent to ' + recipient);
     });
-
-    Logger.log('Approval email sent to ' + recipientEmail);
   } catch (err) {
     Logger.log('notifyApprovers_ error: ' + err.message);
   }
@@ -314,9 +387,16 @@ function jsonResponse_(data) {
 
 // ════════════════════════════════════════════════════════════════
 //  getOrCreateSheet_ — ensures sheet exists with headers
+//  Reads SPREADSHEET_ID from Script Properties (set by setupRosemaryStaffHub_)
 // ════════════════════════════════════════════════════════════════
 function getOrCreateSheet_(sheetName, headers) {
-  var ss    = SpreadsheetApp.openById(CONFIG.spreadsheetId);
+  var spreadsheetId = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+
+  if (!spreadsheetId) {
+    throw new Error('SPREADSHEET_ID Script Property is not set. Run setupRosemaryStaffHub_() first.');
+  }
+
+  var ss    = SpreadsheetApp.openById(spreadsheetId);
   var sheet = ss.getSheetByName(sheetName);
 
   if (!sheet) {
