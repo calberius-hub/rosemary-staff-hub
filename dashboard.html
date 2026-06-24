@@ -17,6 +17,7 @@
       padding: 32px 24px 64px;
     }
 
+    /* ── Header ── */
     .header {
       display: flex;
       align-items: center;
@@ -25,181 +26,155 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
+    .header-left { display: flex; align-items: center; gap: 14px; }
     .logo {
-      width: 44px;
-      height: 44px;
-      background: #5a8a5e;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 44px; height: 44px;
+      background: #5a8a5e; border-radius: 12px;
+      font-size: 16px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; justify-content: center;
       letter-spacing: -0.5px;
     }
-
-    .header-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #f0f0f0;
-    }
-
-    .header-sub {
-      font-size: 12px;
-      color: #555;
-      margin-top: 2px;
-    }
-
-    .refresh-info {
-      font-size: 12px;
-      color: #444;
-      text-align: right;
-    }
-
-    #last-updated {
-      color: #666;
-    }
+    .header-title { font-size: 20px; font-weight: 600; color: #f0f0f0; }
+    .header-sub   { font-size: 12px; color: #555; margin-top: 2px; }
+    .refresh-info { font-size: 12px; color: #444; text-align: right; }
+    #last-updated { color: #666; }
 
     /* ── Sections ── */
-    .section {
-      margin-bottom: 36px;
-    }
-
+    .section { margin-bottom: 36px; }
     .section-title {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #555;
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #1e1e1e;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #555; margin-bottom: 14px;
+      padding-bottom: 8px; border-bottom: 1px solid #1e1e1e;
     }
 
     /* ── Tables ── */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
     .data-table th {
-      text-align: left;
-      padding: 10px 14px;
-      background: #1a1a1a;
-      color: #666;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      text-align: left; padding: 10px 14px;
+      background: #1a1a1a; color: #666;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
       border-bottom: 1px solid #2a2a2a;
     }
-
     .data-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid #181818;
-      color: #c0c0c0;
-      vertical-align: top;
+      padding: 12px 14px; border-bottom: 1px solid #181818;
+      color: #c0c0c0; vertical-align: top;
     }
-
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:hover td { background: #141414; }
-
     .data-table-wrap {
-      background: #141414;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      overflow: hidden;
+      background: #141414; border: 1px solid #2a2a2a;
+      border-radius: 12px; overflow: hidden;
     }
 
-    /* ── Status badges ── */
+    /* ── Badges ── */
     .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
     }
     .badge-pending   { background: #2d2200; color: #e0a800; border: 1px solid #4d3800; }
     .badge-approved  { background: #0e2b10; color: #4caf50; border: 1px solid #1e4f21; }
+    .badge-rejected  { background: #2a1010; color: #e05050; border: 1px solid #4f1e1e; }
     .badge-submitted { background: #0d1f3c; color: #5b9cf6; border: 1px solid #1a3a6c; }
     .badge-yes       { background: #0e2b10; color: #4caf50; border: 1px solid #1e4f21; }
     .badge-no        { background: #2a1010; color: #e05050; border: 1px solid #4f1e1e; }
 
-    /* ── Employee grid ── */
+    /* ── PTO tracker cards ── */
+    .pto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .pto-card {
+      background: #141414; border: 1px solid #2a2a2a;
+      border-radius: 12px; padding: 18px 16px;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .pto-card:hover { border-color: #5a8a5e; }
+    .pto-card-name { font-weight: 600; font-size: 15px; color: #f0f0f0; margin-bottom: 8px; }
+    .pto-days {
+      font-size: 28px; font-weight: 700; color: #5b9cf6;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .pto-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.07em; }
+    .pto-bar-wrap {
+      margin-top: 12px; background: #1e1e1e;
+      border-radius: 4px; height: 4px; overflow: hidden;
+    }
+    .pto-bar { height: 4px; border-radius: 4px; background: #5b9cf6; transition: width 0.3s; }
+    .pto-bar.warn { background: #e0a800; }
+    .pto-bar.over { background: #e05050; }
+    .pto-hint { font-size: 11px; color: #444; margin-top: 6px; }
+
+    /* ── Employee report-status grid ── */
     .emp-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 12px;
     }
-
     .emp-card {
-      background: #141414;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 18px 16px;
+      background: #141414; border: 1px solid #2a2a2a;
+      border-radius: 12px; padding: 18px 16px;
     }
-
-    .emp-name {
-      font-weight: 600;
-      font-size: 15px;
-      color: #f0f0f0;
-      margin-bottom: 10px;
-    }
-
+    .emp-name { font-weight: 600; font-size: 15px; color: #f0f0f0; margin-bottom: 10px; }
     .emp-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 6px;
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 12px; color: #666; margin-bottom: 6px;
     }
     .emp-row:last-child { margin-bottom: 0; }
 
+    /* ── Month drill-down ── */
+    .month-tabs {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+    }
+    .month-tab {
+      padding: 6px 16px; border-radius: 20px; font-size: 13px;
+      font-weight: 500; cursor: pointer; border: 1px solid #2a2a2a;
+      background: #141414; color: #888; transition: all 0.15s;
+    }
+    .month-tab:hover  { border-color: #5a8a5e; color: #f0f0f0; }
+    .month-tab.active { background: #5a8a5e; border-color: #5a8a5e; color: #fff; }
+
+    .report-panels { display: flex; flex-direction: column; gap: 24px; }
+    .report-panel-title {
+      font-size: 12px; font-weight: 600; color: #666;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    /* ── PTO detail drawer ── */
+    .pto-detail {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid #222; display: none;
+    }
+    .pto-detail.open { display: block; }
+    .pto-detail-row {
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: #888; padding: 4px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .pto-detail-row:last-child { border-bottom: none; }
+
     /* ── Empty & loading ── */
     .empty-row td {
-      text-align: center;
-      color: #444;
-      padding: 28px;
-      font-style: italic;
+      text-align: center; color: #444;
+      padding: 28px; font-style: italic;
     }
-
     .loading-overlay {
-      text-align: center;
-      padding: 48px 0;
-      color: #444;
-      font-size: 14px;
-      animation: pulse 1.4s ease-in-out infinite;
+      text-align: center; padding: 48px 0; color: #444;
+      font-size: 14px; animation: pulse 1.4s ease-in-out infinite;
     }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
     .error-msg {
-      background: #1a0a0a;
-      border: 1px solid #3a1010;
-      border-radius: 10px;
-      padding: 16px;
-      color: #c05050;
-      font-size: 14px;
-      text-align: center;
+      background: #1a0a0a; border: 1px solid #3a1010;
+      border-radius: 10px; padding: 16px;
+      color: #c05050; font-size: 14px; text-align: center;
     }
-
-    /* ── Notes truncation ── */
     .truncate {
-      max-width: 240px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      max-width: 200px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
     }
   </style>
 </head>
@@ -223,117 +198,262 @@
 </div>
 
 <script>
-  // ── CONFIG ────────────────────────────────────────────────────
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec';
-  const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
-  const EMPLOYEES = ['Austin', 'Jaimie', 'Lindsey', 'Nathan'];
+  const WEB_APP_URL        = 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec';
+  const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+  const EMPLOYEES           = ['Austin', 'Jaimie', 'Lindsey', 'Nathan'];
+  const PTO_ANNUAL_DAYS     = 10; // adjust as needed
 
-  // ── Helpers ───────────────────────────────────────────────────
+  let _data         = null;
+  let _activeMonth  = null;
+
+  // ── Helpers ──────────────────────────────────────────────────
   function esc(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
-  function formatDate(str) {
-    if (!str) return '—';
+  function fmtDate(str) {
+    if (!str || str === 'undefined') return '—';
     const d = new Date(str + (str.length === 10 ? 'T00:00:00' : ''));
     if (isNaN(d)) return str;
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
-
+  function fmtMonth(key) {
+    // key = 'YYYY-MM'
+    const [y, m] = key.split('-');
+    const d = new Date(+y, +m - 1, 1);
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
   function badge(text, cls) {
     return `<span class="badge badge-${cls}">${esc(text)}</span>`;
   }
+  function badgeForStatus(s) {
+    const low = (s || '').toLowerCase();
+    if (low === 'approved') return badge('Approved', 'approved');
+    if (low === 'rejected') return badge('Rejected', 'rejected');
+    return badge('Pending', 'pending');
+  }
 
-  // ── Render helpers ────────────────────────────────────────────
-  function renderPTOTable(pendingPTO) {
+  // ── PTO tracker section ───────────────────────────────────────
+  function renderPTOTracker(ptoByEmployee) {
+    const cards = EMPLOYEES.map(emp => {
+      const info  = (ptoByEmployee && ptoByEmployee[emp]) || { days: 0, requests: [] };
+      const days  = info.days || 0;
+      const pct   = Math.min(100, Math.round(days / PTO_ANNUAL_DAYS * 100));
+      const cls   = pct >= 100 ? 'over' : pct >= 80 ? 'warn' : '';
+      const reqs  = (info.requests || []);
+
+      const detailRows = reqs.length
+        ? reqs.map(r => `
+            <div class="pto-detail-row">
+              <span>${esc(fmtDate(r.startDate))} – ${esc(fmtDate(r.endDate))}</span>
+              <span style="display:flex;align-items:center;gap:8px;">
+                <span style="color:#888">${r.days}d · ${esc(r.type)}</span>
+                ${badgeForStatus(r.status)}
+              </span>
+            </div>`).join('')
+        : '<div style="font-size:12px;color:#444;padding:4px 0">No PTO this year</div>';
+
+      return `
+        <div class="pto-card" onclick="togglePTODetail('${esc(emp)}')">
+          <div class="pto-card-name">${esc(emp)}</div>
+          <div class="pto-days">${days}</div>
+          <div class="pto-label">days used · ${new Date().getFullYear()}</div>
+          <div class="pto-bar-wrap">
+            <div class="pto-bar ${cls}" style="width:${pct}%"></div>
+          </div>
+          <div class="pto-hint">${days} of ${PTO_ANNUAL_DAYS} days (${pct}%)</div>
+          <div class="pto-detail" id="pto-detail-${esc(emp)}">
+            ${detailRows}
+          </div>
+        </div>`;
+    }).join('');
+
+    return `<div class="pto-grid">${cards}</div>`;
+  }
+
+  function togglePTODetail(emp) {
+    const el = document.getElementById('pto-detail-' + emp);
+    if (el) el.classList.toggle('open');
+  }
+
+  // ── Pending PTO table ─────────────────────────────────────────
+  function renderPendingPTO(pendingPTO) {
     if (!pendingPTO || pendingPTO.length === 0) {
       return `<div class="data-table-wrap">
         <table class="data-table">
-          <thead><tr>
-            <th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th>
-          </tr></thead>
+          <thead><tr><th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th></tr></thead>
           <tbody><tr class="empty-row"><td colspan="6">No pending PTO requests 🎉</td></tr></tbody>
         </table>
       </div>`;
     }
-
     const rows = pendingPTO.map(r => `
       <tr>
         <td><strong>${esc(r.employee)}</strong></td>
-        <td>${esc(formatDate(r.startDate))}</td>
-        <td>${esc(formatDate(r.endDate))}</td>
+        <td>${esc(fmtDate(r.startDate))}</td>
+        <td>${esc(fmtDate(r.endDate))}</td>
         <td>${esc(r.type)}</td>
         <td class="truncate" title="${esc(r.notes)}">${esc(r.notes) || '<span style="color:#444">—</span>'}</td>
-        <td>${badge(r.status || 'Pending', 'pending')}</td>
+        <td>${badgeForStatus(r.status)}</td>
       </tr>`).join('');
-
     return `<div class="data-table-wrap">
       <table class="data-table">
-        <thead><tr>
-          <th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th>
-        </tr></thead>
+        <thead><tr><th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
   }
 
-  function renderEmployeeGrid(weeklyStatus, monthlyStatus) {
+  // ── Report status grid ────────────────────────────────────────
+  function renderReportStatus(weeklyStatus, monthlyStatus) {
     const cards = EMPLOYEES.map(emp => {
-      const weekly  = weeklyStatus  && weeklyStatus[emp];
-      const monthly = monthlyStatus && monthlyStatus[emp];
+      const w = weeklyStatus  && weeklyStatus[emp];
+      const m = monthlyStatus && monthlyStatus[emp];
       return `<div class="emp-card">
         <div class="emp-name">${esc(emp)}</div>
-        <div class="emp-row">
-          <span>Weekly Report</span>
-          ${weekly ? badge('Submitted', 'yes') : badge('Missing', 'no')}
-        </div>
-        <div class="emp-row">
-          <span>Monthly Report</span>
-          ${monthly ? badge('Submitted', 'yes') : badge('Missing', 'no')}
-        </div>
+        <div class="emp-row"><span>Weekly Report</span>${w ? badge('Submitted','yes') : badge('Missing','no')}</div>
+        <div class="emp-row"><span>Monthly Report</span>${m ? badge('Submitted','yes') : badge('Missing','no')}</div>
       </div>`;
     }).join('');
     return `<div class="emp-grid">${cards}</div>`;
   }
 
+  // ── Month tabs & drill-down ───────────────────────────────────
+  function renderMonthSection(reportsByMonth) {
+    const months = Object.keys(reportsByMonth || {}).sort().reverse();
+    if (!months.length) {
+      return `<div style="color:#444;font-size:14px;padding:16px 0">No reports submitted yet.</div>`;
+    }
+
+    if (!_activeMonth || !reportsByMonth[_activeMonth]) {
+      _activeMonth = months[0];
+    }
+
+    const tabs = months.map(m => `
+      <div class="month-tab ${m === _activeMonth ? 'active' : ''}"
+           onclick="selectMonth('${m}')">${fmtMonth(m)}</div>
+    `).join('');
+
+    const panel = renderMonthPanel(reportsByMonth[_activeMonth] || {});
+
+    return `
+      <div class="month-tabs">${tabs}</div>
+      <div id="month-panel">${panel}</div>
+    `;
+  }
+
+  function selectMonth(key) {
+    if (!_data) return;
+    _activeMonth = key;
+    // Re-render just the tabs + panel
+    document.querySelectorAll('.month-tab').forEach(t => {
+      t.classList.toggle('active', t.textContent === fmtMonth(key));
+    });
+    document.getElementById('month-panel').innerHTML =
+      renderMonthPanel((_data.reportsByMonth || {})[key] || {});
+  }
+
+  function renderMonthPanel(monthData) {
+    const weeklies  = monthData.weekly  || [];
+    const monthlies = monthData.monthly || [];
+
+    // ── Weekly table
+    let weeklyHtml;
+    if (!weeklies.length) {
+      weeklyHtml = `<div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Employee</th><th>Week Ending</th><th>Hours</th><th>Tasks</th><th>Maintenance</th><th>Needs Attention</th></tr></thead>
+          <tbody><tr class="empty-row"><td colspan="6">No weekly reports this month</td></tr></tbody>
+        </table></div>`;
+    } else {
+      const rows = weeklies.map(r => `
+        <tr>
+          <td><strong>${esc(r.employee)}</strong></td>
+          <td>${esc(fmtDate(r.weekEnding))}</td>
+          <td>${esc(r.hoursWorked)}</td>
+          <td class="truncate" title="${esc(r.tasks)}">${esc(r.tasks) || '—'}</td>
+          <td class="truncate" title="${esc(r.maintenance)}">${esc(r.maintenance) || '—'}</td>
+          <td class="truncate" title="${esc(r.attention)}">${esc(r.attention) || '—'}</td>
+        </tr>`).join('');
+      weeklyHtml = `<div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Employee</th><th>Week Ending</th><th>Hours</th><th>Tasks</th><th>Maintenance</th><th>Needs Attention</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>`;
+    }
+
+    // ── Monthly table
+    let monthlyHtml;
+    if (!monthlies.length) {
+      monthlyHtml = `<div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Employee</th><th>Month</th><th>Hours</th><th>PTO Days</th><th>Open Maint.</th><th>Notable Events</th><th>Needs Attention</th></tr></thead>
+          <tbody><tr class="empty-row"><td colspan="7">No monthly reports this month</td></tr></tbody>
+        </table></div>`;
+    } else {
+      const rows = monthlies.map(r => `
+        <tr>
+          <td><strong>${esc(r.employee)}</strong></td>
+          <td>${esc(r.month)}</td>
+          <td>${esc(r.totalHours)}</td>
+          <td>${esc(r.ptoDaysUsed) || '0'}</td>
+          <td class="truncate" title="${esc(r.maintenance)}">${esc(r.maintenance) || '—'}</td>
+          <td class="truncate" title="${esc(r.events)}">${esc(r.events) || '—'}</td>
+          <td class="truncate" title="${esc(r.attention)}">${esc(r.attention) || '—'}</td>
+        </tr>`).join('');
+      monthlyHtml = `<div class="data-table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Employee</th><th>Month</th><th>Hours</th><th>PTO Days</th><th>Open Maint.</th><th>Notable Events</th><th>Needs Attention</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>`;
+    }
+
+    return `
+      <div class="report-panels">
+        <div>
+          <div class="report-panel-title">📅 Weekly Reports (${weeklies.length})</div>
+          ${weeklyHtml}
+        </div>
+        <div>
+          <div class="report-panel-title">📊 Monthly Reports (${monthlies.length})</div>
+          ${monthlyHtml}
+        </div>
+      </div>`;
+  }
+
+  // ── Main render ───────────────────────────────────────────────
   function renderDashboard(data) {
+    _data = data;
     const now = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     document.getElementById('last-updated').textContent = now;
 
     document.getElementById('main-content').innerHTML = `
       <div class="section">
-        <div class="section-title">⏳ Pending PTO Requests (${(data.pendingPTO || []).length})</div>
-        ${renderPTOTable(data.pendingPTO)}
+        <div class="section-title">📆 PTO Tracker — ${new Date().getFullYear()} (click employee to expand)</div>
+        ${renderPTOTracker(data.ptoByEmployee)}
       </div>
       <div class="section">
-        <div class="section-title">📋 Report Submission Status</div>
-        ${renderEmployeeGrid(data.weeklyStatus, data.monthlyStatus)}
+        <div class="section-title">⏳ Pending PTO Requests (${(data.pendingPTO || []).length})</div>
+        ${renderPendingPTO(data.pendingPTO)}
+      </div>
+      <div class="section">
+        <div class="section-title">📋 This Week / Month — Report Status</div>
+        ${renderReportStatus(data.weeklyStatus, data.monthlyStatus)}
+      </div>
+      <div class="section">
+        <div class="section-title">🗂 Reports by Month</div>
+        ${renderMonthSection(data.reportsByMonth)}
       </div>
     `;
   }
 
   function renderError(msg) {
-    document.getElementById('main-content').innerHTML = `
-      <div class="error-msg">⚠️ ${esc(msg)}</div>`;
+    document.getElementById('main-content').innerHTML =
+      `<div class="error-msg">⚠️ ${esc(msg)}</div>`;
   }
 
-  // ── Fetch & render ────────────────────────────────────────────
+  // ── Fetch ─────────────────────────────────────────────────────
   async function loadDashboard() {
-    if (WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec') {
-      // Demo mode — show placeholder data
-      renderDashboard({
-        pendingPTO: [
-          { employee: 'Austin', startDate: '2024-07-04', endDate: '2024-07-08', type: 'Vacation', notes: 'Family trip', status: 'Pending' },
-          { employee: 'Lindsey', startDate: '2024-07-15', endDate: '2024-07-15', type: 'Personal', notes: '', status: 'Pending' }
-        ],
-        weeklyStatus:  { Austin: true,  Jaimie: false, Lindsey: true,  Nathan: false },
-        monthlyStatus: { Austin: false, Jaimie: false, Lindsey: false, Nathan: false }
-      });
-      return;
-    }
-
     try {
-      const res  = await fetch(WEB_APP_URL + '?action=getDashboard');
+      const res  = await fetch(WEB_APP_URL + '?action=getDetailedDashboard');
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Unknown error');
       renderDashboard(data);
@@ -342,7 +462,6 @@
     }
   }
 
-  // ── Init & auto-refresh ───────────────────────────────────────
   loadDashboard();
   setInterval(loadDashboard, REFRESH_INTERVAL_MS);
 </script>

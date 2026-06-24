@@ -122,6 +122,8 @@ function doGet(e) {
       return handleGetSubmissions_(employee);
     } else if (action === 'getDashboard') {
       return handleGetDashboard_();
+    } else if (action === 'getDetailedDashboard') {
+      return handleGetDetailedDashboard_();
     } else if (action === 'submitPTO') {
       return handleSubmitPTO_(e.parameter);
     } else if (action === 'submitWeeklyReport') {
@@ -184,6 +186,15 @@ function handleSubmitWeekly_(body) {
     body.attention   || ''
   ]);
 
+  notifyApprovers_('Weekly Report', body.employee, {
+    weekEnding:  body.weekEnding,
+    hoursWorked: body.hoursWorked,
+    tasks:       body.tasks,
+    maintenance: body.maintenance,
+    residents:   body.residents,
+    attention:   body.attention
+  });
+
   return jsonResponse_({ success: true, message: 'Weekly report submitted.' });
 }
 
@@ -204,6 +215,15 @@ function handleSubmitMonthly_(body) {
     body.events      || '',
     body.attention   || ''
   ]);
+
+  notifyApprovers_('Monthly Report', body.employee, {
+    month:       body.month,
+    totalHours:  body.totalHours,
+    ptoDaysUsed: body.ptoDaysUsed,
+    maintenance: body.maintenance,
+    events:      body.events,
+    attention:   body.attention
+  });
 
   return jsonResponse_({ success: true, message: 'Monthly report submitted.' });
 }
@@ -333,6 +353,139 @@ function handleGetDashboard_() {
 }
 
 // ════════════════════════════════════════════════════════════════
+//  handleGetDetailedDashboard_
+//  Returns:
+//    - pendingPTO   (same as getDashboard)
+//    - ptoByEmployee { Austin: { days: N, requests: [...] }, ... }
+//    - reportsByMonth { '2026-06': { weekly: [...], monthly: [...] }, ... }
+//    - weeklyStatus / monthlyStatus (same as getDashboard)
+// ════════════════════════════════════════════════════════════════
+function handleGetDetailedDashboard_() {
+  var employees = ['Austin', 'Jaimie', 'Lindsey', 'Nathan'];
+  var nowDate   = new Date();
+  var thisYear  = nowDate.getFullYear();
+
+  // ── PTO ──────────────────────────────────────────────────────
+  var ptoSheet = getOrCreateSheet_(SHEETS.PTO, HEADERS.PTO);
+  var ptoData  = ptoSheet.getDataRange().getValues();
+
+  var pendingPTO = [];
+  var ptoByEmployee = {};
+  employees.forEach(function(emp) {
+    ptoByEmployee[emp] = { days: 0, requests: [] };
+  });
+
+  for (var i = 1; i < ptoData.length; i++) {
+    var row = ptoData[i];
+    var emp       = String(row[1]);
+    var startStr  = String(row[2]);
+    var endStr    = String(row[3]);
+    var type      = String(row[4]);
+    var notes     = String(row[5]);
+    var status    = String(row[6] || 'Pending');
+    var timestamp = String(row[0]).slice(0, 10);
+
+    // YTD: count approved/pending PTO days this calendar year
+    var startD = new Date(startStr + (startStr.length === 10 ? 'T00:00:00' : ''));
+    var endD   = new Date(endStr   + (endStr.length   === 10 ? 'T00:00:00' : ''));
+    var days   = (!isNaN(startD) && !isNaN(endD))
+                   ? Math.round((endD - startD) / 86400000) + 1
+                   : 0;
+    var inYear = !isNaN(startD) && startD.getFullYear() === thisYear;
+
+    if (ptoByEmployee[emp] && inYear) {
+      ptoByEmployee[emp].days += days;
+      ptoByEmployee[emp].requests.push({
+        startDate: startStr, endDate: endStr, type: type,
+        notes: notes, status: status, days: days, timestamp: timestamp
+      });
+    }
+
+    if (status.toLowerCase() === 'pending') {
+      pendingPTO.push({
+        employee: emp, startDate: startStr, endDate: endStr,
+        type: type, notes: notes, status: status, timestamp: timestamp
+      });
+    }
+  }
+
+  // ── Weekly reports ────────────────────────────────────────────
+  var weeklySheet = getOrCreateSheet_(SHEETS.WEEKLY, HEADERS.WEEKLY);
+  var weeklyData  = weeklySheet.getDataRange().getValues();
+
+  // For "this week submitted" check
+  var thisMonday = getThisMonday_();
+  var weeklySubmitted = {};
+  employees.forEach(function(emp) { weeklySubmitted[emp] = false; });
+
+  var reportsByMonth = {};
+
+  for (var j = 1; j < weeklyData.length; j++) {
+    var wrow       = weeklyData[j];
+    var wts        = new Date(wrow[0]);
+    var wemp       = String(wrow[1]);
+    var weekEnding = String(wrow[2]);
+    var monthKey   = String(wrow[0]).slice(0, 7); // YYYY-MM from timestamp
+
+    if (wts >= thisMonday && weeklySubmitted.hasOwnProperty(wemp)) {
+      weeklySubmitted[wemp] = true;
+    }
+
+    if (!reportsByMonth[monthKey]) reportsByMonth[monthKey] = { weekly: [], monthly: [] };
+    reportsByMonth[monthKey].weekly.push({
+      employee:    wemp,
+      weekEnding:  weekEnding,
+      hoursWorked: String(wrow[3]),
+      tasks:       String(wrow[4]),
+      maintenance: String(wrow[5]),
+      residents:   String(wrow[6]),
+      attention:   String(wrow[7]),
+      timestamp:   String(wrow[0]).slice(0, 10)
+    });
+  }
+
+  // ── Monthly reports ───────────────────────────────────────────
+  var thisYearMonth    = thisYear + '-' + String(nowDate.getMonth() + 1).padStart(2, '0');
+  var monthlySheet     = getOrCreateSheet_(SHEETS.MONTHLY, HEADERS.MONTHLY);
+  var monthlyData      = monthlySheet.getDataRange().getValues();
+  var monthlySubmitted = {};
+  employees.forEach(function(emp) { monthlySubmitted[emp] = false; });
+
+  for (var k = 1; k < monthlyData.length; k++) {
+    var mrow     = monthlyData[k];
+    var memp     = String(mrow[1]);
+    var month    = String(mrow[2]);
+    var monthKey2 = String(mrow[0]).slice(0, 7);
+
+    if (month === thisYearMonth && monthlySubmitted.hasOwnProperty(memp)) {
+      monthlySubmitted[memp] = true;
+    }
+
+    if (!reportsByMonth[monthKey2]) reportsByMonth[monthKey2] = { weekly: [], monthly: [] };
+    reportsByMonth[monthKey2].monthly.push({
+      employee:    memp,
+      month:       month,
+      totalHours:  String(mrow[3]),
+      ptoDaysUsed: String(mrow[4]),
+      maintenance: String(mrow[5]),
+      events:      String(mrow[6]),
+      attention:   String(mrow[7]),
+      timestamp:   String(mrow[0]).slice(0, 10)
+    });
+  }
+
+  return jsonResponse_({
+    success:         true,
+    pendingPTO:      pendingPTO,
+    ptoByEmployee:   ptoByEmployee,
+    reportsByMonth:  reportsByMonth,
+    weeklyStatus:    weeklySubmitted,
+    monthlyStatus:   monthlySubmitted,
+    asOf:            nowDate.toISOString()
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
 //  notifyApprovers_
 //  Reads APPROVER_EMAILS from Script Properties (comma-separated).
 //  Sends one email to each address.
@@ -354,20 +507,55 @@ function notifyApprovers_(type, employee, details) {
       return;
     }
 
-    var subject = 'PTO Request — ' + employee + ' ' + details.startDate + ' to ' + details.endDate;
-    var body = [
-      'A new PTO request has been submitted.',
-      '',
-      'Employee:   ' + employee,
-      'Type:       ' + details.type,
-      'Start Date: ' + details.startDate,
-      'End Date:   ' + details.endDate,
-      'Notes:      ' + (details.notes || '(none)'),
-      '',
-      'Please review and update the Status column in the "PTO Requests" sheet to Approved or Rejected.',
-      '',
-      '— Rosemary Staff Hub'
-    ].join('\n');
+    var subject, body;
+
+    if (type === 'PTO') {
+      subject = 'PTO Request — ' + employee + ' (' + details.startDate + ' to ' + details.endDate + ')';
+      body = [
+        'A new PTO request has been submitted.',
+        '',
+        'Employee:   ' + employee,
+        'Type:       ' + details.type,
+        'Start Date: ' + details.startDate,
+        'End Date:   ' + details.endDate,
+        'Notes:      ' + (details.notes || '(none)'),
+        '',
+        'Please review and update the Status column in the "PTO Requests" sheet to Approved or Rejected.',
+        '',
+        '— Rosemary Staff Hub'
+      ].join('\n');
+    } else if (type === 'Weekly Report') {
+      subject = 'Weekly Report — ' + employee + ' (week ending ' + details.weekEnding + ')';
+      body = [
+        employee + ' submitted a weekly report.',
+        '',
+        'Week Ending:  ' + details.weekEnding,
+        'Hours Worked: ' + details.hoursWorked,
+        'Tasks:        ' + (details.tasks || '(none)'),
+        'Maintenance:  ' + (details.maintenance || '(none)'),
+        'Residents:    ' + (details.residents || '(none)'),
+        'Needs Attn:   ' + (details.attention || '(none)'),
+        '',
+        '— Rosemary Staff Hub'
+      ].join('\n');
+    } else if (type === 'Monthly Report') {
+      subject = 'Monthly Report — ' + employee + ' (' + details.month + ')';
+      body = [
+        employee + ' submitted a monthly report.',
+        '',
+        'Month:          ' + details.month,
+        'Total Hours:    ' + details.totalHours,
+        'PTO Days Used:  ' + (details.ptoDaysUsed || '0'),
+        'Open Maint.:    ' + (details.maintenance || '(none)'),
+        'Notable Events: ' + (details.events || '(none)'),
+        'Needs Attn:     ' + (details.attention || '(none)'),
+        '',
+        '— Rosemary Staff Hub'
+      ].join('\n');
+    } else {
+      subject = type + ' — ' + employee;
+      body = JSON.stringify(details) + '\n\n— Rosemary Staff Hub';
+    }
 
     recipients.forEach(function(recipient) {
       MailApp.sendEmail({
