@@ -224,7 +224,7 @@
 
 <script>
   // ── CONFIG ────────────────────────────────────────────────────
-  const WEB_APP_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec';
   const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
   const EMPLOYEES = ['Austin', 'Jaimie', 'Lindsey', 'Nathan'];
 
@@ -319,7 +319,7 @@
 
   // ── Fetch & render ────────────────────────────────────────────
   async function loadDashboard() {
-    if (WEB_APP_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+    if (WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec') {
       // Demo mode — show placeholder data
       renderDashboard({
         pendingPTO: [

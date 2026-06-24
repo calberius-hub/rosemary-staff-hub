@@ -618,7 +618,7 @@
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────
-  const WEB_APP_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec';
 
   // ── State ────────────────────────────────────────────────────────
   let currentEmployee = null;
@@ -716,7 +716,7 @@
     const list = document.getElementById('submissions-list');
     list.innerHTML = '<div class="loading-text">Loading…</div>';
 
-    if (WEB_APP_URL === 'PASTE_APPS_SCRIPT_URL_HERE') {
+    if (WEB_APP_URL === 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec') {
       list.innerHTML = '<div class="empty-state">Connect the backend to see submissions.</div>';
       return;
     }
@@ -790,7 +790,7 @@
     };
 
     try {
-      if (WEB_APP_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+      if (WEB_APP_URL !== 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec') {
         await postToBackend(payload);
       }
       document.getElementById('pto-form-wrap').style.display = 'none';
@@ -823,7 +823,7 @@
     };
 
     try {
-      if (WEB_APP_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+      if (WEB_APP_URL !== 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec') {
         await postToBackend(payload);
       }
       document.getElementById('weekly-form-wrap').style.display = 'none';
@@ -856,7 +856,7 @@
     };
 
     try {
-      if (WEB_APP_URL !== 'PASTE_APPS_SCRIPT_URL_HERE') {
+      if (WEB_APP_URL !== 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec') {
         await postToBackend(payload);
       }
       document.getElementById('monthly-form-wrap').style.display = 'none';
