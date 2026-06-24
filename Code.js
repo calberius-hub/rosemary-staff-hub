@@ -34,7 +34,7 @@ var HEADERS = {
 //  It creates the Google Spreadsheet, sets up all three sheets,
 //  and saves the Spreadsheet ID to Script Properties automatically.
 // ════════════════════════════════════════════════════════════════
-function setupRosemaryStaffHub_() {
+function setupRosemaryStaffHub() {
   var props = PropertiesService.getScriptProperties();
 
   // Check if already set up
