@@ -754,13 +754,10 @@
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── POST helper ───────────────────────────────────────────────────
+  // ── GET helper (query params) ─────────────────────────────────────
   async function postToBackend(payload) {
-    const res = await fetch(WEB_APP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const params = new URLSearchParams(payload);
+    const res = await fetch(WEB_APP_URL + '?' + params.toString());
     return res.json();
   }
 

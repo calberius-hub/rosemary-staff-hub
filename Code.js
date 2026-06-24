@@ -122,6 +122,12 @@ function doGet(e) {
       return handleGetSubmissions_(employee);
     } else if (action === 'getDashboard') {
       return handleGetDashboard_();
+    } else if (action === 'submitPTO') {
+      return handleSubmitPTO_(e.parameter);
+    } else if (action === 'submitWeeklyReport') {
+      return handleSubmitWeekly_(e.parameter);
+    } else if (action === 'submitMonthlyReport') {
+      return handleSubmitMonthly_(e.parameter);
     } else {
       return jsonResponse_({ success: false, error: 'Unknown action: ' + action });
     }
