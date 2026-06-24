@@ -4,47 +4,119 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rosemary Staff Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg:          #f5f1ea;
+      --surface:     #faf8f3;
+      --surface2:    #f2ede3;
+      --surface3:    #ebe6db;
+      --border:      #cdcaba;
+      --text:        #1a1f1c;
+      --text-dim:    #2f3a33;
+      --text-dimmer: #5e6e63;
+      --sand:        #6d6559;
+      --gold:        #8c7342;
+      --sage:        #5a8a5e;
+      --sage-dk:     #4a7550;
+      --coral:       #b24a3a;
+      --yellow:      #b9923e;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0f0f0f;
-      color: #f0f0f0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
       min-height: 100vh;
+    }
+
+    /* ── Login overlay ── */
+    #login-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .login-logo { width: 160px; height: auto; border-radius: 10px; margin-bottom: 10px; display: block; }
+    .login-kicker {
+      font-size: 11px; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-dimmer);
+      margin-bottom: 28px;
+    }
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      width: 100%; max-width: 340px;
+      box-shadow: 0 4px 24px rgba(26,31,28,0.08);
+    }
+    .login-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 600;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .login-card p { font-size: 13px; color: var(--text-dimmer); margin-bottom: 20px; }
+    .login-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--text-dimmer);
+      display: block; margin-bottom: 6px;
+    }
+    .login-select, .login-input {
+      width: 100%; background: var(--bg);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-family: 'DM Sans', sans-serif;
+      font-size: 14px; color: var(--text); outline: none;
+      margin-bottom: 14px; appearance: none;
+      transition: border-color 0.15s;
+    }
+    .login-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235e6e63' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 36px; cursor: pointer;
+    }
+    .login-select:focus, .login-input:focus { border-color: var(--sage); }
+    .login-btn {
+      width: 100%; background: var(--sage); color: #fff;
+      border: none; border-radius: 10px; padding: 13px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px;
+      font-weight: 600; cursor: pointer; margin-top: 4px;
+      transition: background 0.15s;
+    }
+    .login-btn:hover { background: var(--sage-dk); }
+    .login-error {
+      font-size: 13px; color: var(--coral);
+      margin-top: 12px; min-height: 18px; text-align: center;
     }
 
     /* ── Header ── */
     .header {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       justify-content: space-between;
-      padding: 18px 28px;
-      border-bottom: 1px solid #2a2a2a;
-      background: #0f0f0f;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 16px 28px;
+      border-bottom: 1px solid rgba(205,202,186,0.55);
+      background: rgba(245,241,234,0.96);
+      backdrop-filter: blur(18px);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     }
     .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-mark {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 700; letter-spacing: -0.5px; color: #fff;
-    }
-    .brand-name   { font-size: 16px; font-weight: 600; color: #f0f0f0; }
-    .brand-kicker { font-size: 11px; color: #555; margin-top: 1px; }
+    .brand-logo { height: 32px; width: auto; border-radius: 6px; display: block; }
+    .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--text); letter-spacing: 1px; }
+    .brand-kicker2 { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
     .header-right { display: flex; align-items: center; gap: 14px; }
-    #last-updated { font-size: 12px; color: #555; }
+    #last-updated { font-size: 12px; color: var(--text-dimmer); }
     .refresh-btn {
-      background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
-      color: #888; padding: 7px 14px; font-size: 13px;
-      font-family: inherit; cursor: pointer; transition: background 0.15s, color 0.15s;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 999px; color: var(--sand);
+      padding: 7px 16px; font-size: 13px;
+      font-family: 'DM Sans', sans-serif; cursor: pointer;
+      transition: background 0.15s;
     }
-    .refresh-btn:hover { background: #222; color: #f0f0f0; border-color: #3a3a3a; }
+    .refresh-btn:hover { background: var(--surface3); }
 
     /* ── Page ── */
     .page { max-width: 1080px; margin: 0 auto; padding: 32px 28px 64px; }
@@ -52,81 +124,74 @@
     /* ── Sections ── */
     .section { margin-bottom: 40px; }
     .section-title {
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: #555; margin-bottom: 16px;
-      padding-bottom: 10px; border-bottom: 1px solid #1e1e1e;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: 1.5px; color: var(--sand);
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 10px;
     }
     .section-count {
-      background: #1a1a1a; border: 1px solid #2a2a2a;
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+      background: var(--surface2); border: 1px solid var(--border);
       border-radius: 999px; padding: 2px 9px;
-      font-size: 11px; color: #666; letter-spacing: 0; text-transform: none;
+      color: var(--text-dimmer); letter-spacing: 0; text-transform: none;
     }
 
     /* ── PTO cards ── */
     .pto-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
     .pto-card {
-      background: #1a1a1a; border: 1px solid #2a2a2a;
-      border-radius: 12px; padding: 18px 16px;
-      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 16px;
+      cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .pto-card:hover { background: #222; border-color: #3a3a3a; }
+    .pto-card:hover { border-color: var(--sage); box-shadow: 0 4px 16px rgba(90,138,94,0.1); }
     .pto-card-name {
-      font-size: 15px; font-weight: 600; color: #f0f0f0; margin-bottom: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 600; color: var(--gold); margin-bottom: 10px;
     }
     .pto-days {
-      font-size: 34px; font-weight: 700; color: #f0f0f0;
-      line-height: 1; margin-bottom: 2px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px; color: var(--text); line-height: 1; margin-bottom: 2px;
     }
     .pto-label {
-      font-size: 11px; color: #555;
-      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px;
+      font-size: 11px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-dimmer); margin-bottom: 12px;
     }
-    .pto-bar-wrap {
-      background: #2a2a2a; border-radius: 4px;
-      height: 3px; overflow: hidden; margin-bottom: 6px;
-    }
-    .pto-bar       { height: 3px; border-radius: 4px; background: #888; transition: width 0.4s; }
-    .pto-bar.warn  { background: #b9923e; }
-    .pto-bar.over  { background: #b24a3a; }
-    .pto-hint      { font-size: 11px; color: #555; }
-    .pto-detail {
-      margin-top: 14px; padding-top: 12px;
-      border-top: 1px solid #2a2a2a; display: none;
-    }
+    .pto-bar-wrap { background: var(--surface3); border-radius: 4px; height: 4px; overflow: hidden; margin-bottom: 6px; }
+    .pto-bar      { height: 4px; border-radius: 4px; background: var(--sage); transition: width 0.4s; }
+    .pto-bar.warn { background: var(--yellow); }
+    .pto-bar.over { background: var(--coral); }
+    .pto-hint     { font-size: 11px; color: var(--text-dimmer); }
+    .pto-detail   { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); display: none; }
     .pto-detail.open { display: block; }
     .pto-detail-row {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 12px; color: #888; padding: 5px 0;
-      border-bottom: 1px solid #1f1f1f; gap: 8px;
+      font-size: 12px; color: var(--text-dim); padding: 5px 0;
+      border-bottom: 1px solid var(--surface3); gap: 8px;
     }
     .pto-detail-row:last-child { border-bottom: none; }
 
     /* ── Tables ── */
-    .table-wrap {
-      background: #1a1a1a; border: 1px solid #2a2a2a;
-      border-radius: 12px; overflow: hidden;
-    }
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
     .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .data-table th {
       text-align: left; padding: 10px 16px;
-      background: #141414; color: #555;
+      background: var(--surface2); color: var(--text-dimmer);
       font-size: 10px; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase;
-      border-bottom: 1px solid #2a2a2a;
+      border-bottom: 1px solid var(--border);
     }
     .data-table td {
-      padding: 12px 16px; border-bottom: 1px solid #1f1f1f;
-      color: #c0c0c0; vertical-align: top;
+      padding: 12px 16px; border-bottom: 1px solid var(--surface3);
+      color: var(--text-dim); vertical-align: top;
     }
     .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: #1f1f1f; }
-    .data-table td strong { color: #f0f0f0; font-weight: 600; }
+    .data-table tr:hover td { background: rgba(245,241,234,0.6); }
+    .data-table td strong { color: var(--text); font-weight: 600; }
 
     /* ── Badges ── */
     .badge {
@@ -135,95 +200,85 @@
       font-size: 10px; font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
     }
-    .badge-pending   { background: #2d2200; color: #b9923e; border: 1px solid #4d3800; }
-    .badge-approved  { background: #0e2010; color: #5a8a5e; border: 1px solid #1e4020; }
-    .badge-rejected  { background: #2a1010; color: #b24a3a; border: 1px solid #4f1e1e; }
-    .badge-submitted { background: #0e2010; color: #5a8a5e; border: 1px solid #1e4020; }
-    .badge-yes       { background: #0e2010; color: #5a8a5e; border: 1px solid #1e4020; }
-    .badge-no        { background: #2a1010; color: #b24a3a; border: 1px solid #4f1e1e; }
+    .badge-pending   { background: rgba(185,146,62,0.12);  color: var(--yellow); border: 1px solid rgba(185,146,62,0.3); }
+    .badge-approved  { background: rgba(90,138,94,0.12);   color: var(--sage);   border: 1px solid rgba(90,138,94,0.3); }
+    .badge-rejected  { background: rgba(178,74,58,0.10);   color: var(--coral);  border: 1px solid rgba(178,74,58,0.25); }
+    .badge-submitted { background: rgba(90,138,94,0.10);   color: var(--sage);   border: 1px solid rgba(90,138,94,0.25); }
+    .badge-yes       { background: rgba(90,138,94,0.12);   color: var(--sage);   border: 1px solid rgba(90,138,94,0.3); }
+    .badge-no        { background: rgba(178,74,58,0.10);   color: var(--coral);  border: 1px solid rgba(178,74,58,0.25); }
 
     /* ── Report status grid ── */
-    .emp-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 12px;
-    }
-    .emp-card {
-      background: #1a1a1a; border: 1px solid #2a2a2a;
-      border-radius: 12px; padding: 18px 16px;
-    }
-    .emp-name { font-size: 15px; font-weight: 600; color: #f0f0f0; margin-bottom: 10px; }
-    .emp-row {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 12px; color: #666; margin-bottom: 7px;
-    }
+    .emp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+    .emp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; }
+    .emp-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--gold); margin-bottom: 10px; }
+    .emp-row  { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-dimmer); margin-bottom: 7px; }
     .emp-row:last-child { margin-bottom: 0; }
 
     /* ── Month tabs ── */
     .month-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
     .month-tab {
-      padding: 6px 16px; border-radius: 8px;
+      padding: 6px 16px; border-radius: 999px;
       font-size: 13px; font-weight: 500; cursor: pointer;
-      border: 1px solid #2a2a2a; background: #1a1a1a; color: #888;
-      font-family: inherit; transition: all 0.15s;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text-dimmer);
+      font-family: 'DM Sans', sans-serif; transition: all 0.15s;
     }
-    .month-tab:hover   { background: #222; border-color: #3a3a3a; color: #f0f0f0; }
-    .month-tab.active  { background: #222; border-color: #3a3a3a; color: #f0f0f0; font-weight: 600; }
+    .month-tab:hover  { border-color: var(--sage); color: var(--text); }
+    .month-tab.active { background: var(--sage); border-color: var(--sage); color: #fff; }
 
     .report-panels { display: flex; flex-direction: column; gap: 24px; }
     .report-panel-title {
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: #555; margin-bottom: 10px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+      letter-spacing: 1px; color: var(--sand); margin-bottom: 10px;
     }
 
     /* ── Empty / loading ── */
-    .empty-row td {
-      text-align: center; color: #444;
-      padding: 32px; font-style: italic;
-    }
+    .empty-row td { text-align: center; color: var(--text-dimmer); padding: 32px; font-style: italic; }
     .loading-overlay {
       text-align: center; padding: 80px 0;
-      color: #444; font-size: 14px;
+      color: var(--text-dimmer); font-size: 14px;
       animation: pulse 1.4s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
     .error-msg {
-      background: #1a0a0a; border: 1px solid #3a1010;
+      background: #fce8e8; border: 1px solid #f0b0b0;
       border-radius: 12px; padding: 20px;
-      color: #b24a3a; font-size: 14px; text-align: center;
+      color: var(--coral); font-size: 14px; text-align: center;
     }
-    .truncate {
-      max-width: 200px; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis;
-    }
+    .truncate { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   </style>
 </head>
 <body>
 
 <!-- ── Login Overlay ── -->
-<div id="login-overlay" style="position:fixed;inset:0;z-index:1000;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-  <img src="rosemary-logo.jpg" style="width:140px;border-radius:8px;margin-bottom:24px" alt="Rosemary Villas">
-  <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:28px;max-width:320px;width:100%;">
-    <div style="font-size:16px;font-weight:600;color:#f0f0f0;margin-bottom:20px;">Admin Sign In</div>
-    <input id="login-name" type="text" placeholder="Your name"
-      style="width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;padding:12px 14px;color:#f0f0f0;font-family:inherit;font-size:14px;margin-bottom:10px;outline:none;">
-    <input id="login-password" type="password" placeholder="Password"
-      style="width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;padding:12px 14px;color:#f0f0f0;font-family:inherit;font-size:14px;margin-bottom:16px;outline:none;">
-    <button onclick="submitLogin()"
-      style="width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;padding:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">
-      Sign In
-    </button>
-    <div id="login-error" style="font-size:12px;color:#b24a3a;margin-top:10px;display:none;"></div>
+<div id="login-overlay">
+  <img src="rosemary-logo.jpg" alt="Rosemary Villas at Chenal" class="login-logo" />
+  <div class="login-kicker">Operations Hub</div>
+  <div class="login-card">
+    <h2>Admin Sign In</h2>
+    <p>Select your name and enter your password.</p>
+    <label class="login-label">Name</label>
+    <select id="login-name" class="login-select">
+      <option value="">Select your name…</option>
+      <option>Cole</option>
+      <option>Randy</option>
+      <option>Josh</option>
+      <option>Nate</option>
+      <option>Lisa</option>
+    </select>
+    <label class="login-label">Password</label>
+    <input id="login-password" type="password" placeholder="Password" class="login-input" />
+    <button class="login-btn" onclick="submitLogin()">Sign In</button>
+    <div id="login-error" class="login-error"></div>
   </div>
 </div>
 
-<div class="header" style="display:none;">
+<!-- ── Header ── -->
+<div class="header" style="display:none">
   <div class="brand">
-    <img src="rosemary-logo.jpg" alt="Rosemary Villas at Chenal" style="height:32px;width:auto;border-radius:6px;display:block;">
-    <div style="margin-left:12px;">
-      <div class="brand-name">Rosemary Staff</div>
-      <div class="brand-kicker">Admin Dashboard</div>
+    <img src="rosemary-logo.jpg" alt="Rosemary Villas" class="brand-logo" />
+    <div style="margin-left:10px">
+      <div class="brand-name">Rosemary Villas</div>
+      <div class="brand-kicker2">Staff Dashboard</div>
     </div>
   </div>
   <div class="header-right">
@@ -232,7 +287,8 @@
   </div>
 </div>
 
-<div class="page" style="display:none;">
+<!-- ── Page ── -->
+<div class="page" style="display:none">
   <div id="main-content">
     <div class="loading-overlay">Loading dashboard…</div>
   </div>
@@ -240,6 +296,7 @@
 
 <script>
   const WEB_APP_URL         = 'https://script.google.com/macros/s/AKfycbwKeQ-t3eEOAA86rx4lU3z-O18-XngIKt6kUCVXUuwKhRP8b1no8FNOP-lEFTSW28gJ/exec';
+  const AUTH_URL            = 'https://script.google.com/macros/s/AKfycbx2dAQwXeR-wnCpY1jlFzwkWtUF9OGNGzB4Y2nDn3jGfGxksVOuxh18--BIgrZ9umkz/exec';
   const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
   const EMPLOYEES           = ['Austin', 'Jaimie', 'Lindsey', 'Nathan'];
   const PTO_ANNUAL_DAYS     = 10;
@@ -281,11 +338,11 @@
             <div class="pto-detail-row">
               <span>${esc(fmtDate(r.startDate))} – ${esc(fmtDate(r.endDate))}</span>
               <span style="display:flex;align-items:center;gap:6px">
-                <span style="color:#666">${r.days}d · ${esc(r.type)}</span>
+                <span style="color:var(--text-dimmer)">${r.days}d · ${esc(r.type)}</span>
                 ${badgeStatus(r.status)}
               </span>
             </div>`).join('')
-        : '<div style="font-size:12px;color:#444;padding:4px 0">No PTO this year</div>';
+        : '<div style="font-size:12px;color:var(--text-dimmer);padding:4px 0">No PTO this year</div>';
       return `
         <div class="pto-card" onclick="togglePTO('${esc(emp)}')">
           <div class="pto-card-name">${esc(emp)}</div>
@@ -314,7 +371,7 @@
       <td>${esc(fmtDate(r.startDate))}</td>
       <td>${esc(fmtDate(r.endDate))}</td>
       <td>${esc(r.type)}</td>
-      <td class="truncate" title="${esc(r.notes)}">${esc(r.notes)||'<span style="color:#444">—</span>'}</td>
+      <td class="truncate" title="${esc(r.notes)}">${esc(r.notes)||'<span style="color:var(--text-dimmer)">—</span>'}</td>
       <td>${badgeStatus(r.status)}</td>
     </tr>`).join('');
     return `<div class="table-wrap"><table class="data-table">${thead}<tbody>${rows}</tbody></table></div>`;
@@ -333,7 +390,7 @@
   // ── Month drill-down ─────────────────────────────────────────
   function renderMonthSection(reportsByMonth) {
     const months = Object.keys(reportsByMonth||{}).sort().reverse();
-    if (!months.length) return '<p style="color:#444;padding:16px 0;font-size:13px">No reports submitted yet.</p>';
+    if (!months.length) return '<p style="color:var(--text-dimmer);padding:16px 0;font-size:13px">No reports submitted yet.</p>';
     if (!_activeMonth||!reportsByMonth[_activeMonth]) _activeMonth = months[0];
     const tabs = months.map(m=>`<button class="month-tab ${m===_activeMonth?'active':''}" onclick="selectMonth('${m}')">${fmtMonth(m)}</button>`).join('');
     return `<div class="month-tabs">${tabs}</div><div id="month-panel">${renderMonthPanel(reportsByMonth[_activeMonth]||{})}</div>`;
@@ -385,7 +442,9 @@
 
     document.getElementById('main-content').innerHTML = `
       <div class="section">
-        <div class="section-title">PTO Tracker — ${new Date().getFullYear()} <span style="font-size:10px;color:#444;text-transform:none;letter-spacing:0;font-weight:400">click to expand</span></div>
+        <div class="section-title">PTO Tracker — ${new Date().getFullYear()}
+          <span style="font-family:'DM Sans';font-size:11px;color:var(--text-dimmer);font-weight:400;letter-spacing:0;text-transform:none">click to expand</span>
+        </div>
         ${renderPTOTracker(data.ptoByEmployee)}
       </div>
       <div class="section">
@@ -419,8 +478,6 @@
   }
 
   // ── Auth ──────────────────────────────────────────────────────
-  const AUTH_URL = 'https://script.google.com/macros/s/AKfycbx2dAQwXeR-wnCpY1jlFzwkWtUF9OGNGzB4Y2nDn3jGfGxksVOuxh18--BIgrZ9umkz/exec';
-
   function showMainContent() {
     document.getElementById('login-overlay').style.display = 'none';
     document.querySelector('.header').style.display = '';
@@ -430,14 +487,14 @@
   function showLoginError(msg) {
     const el = document.getElementById('login-error');
     el.textContent = msg;
-    el.style.display = 'block';
   }
 
   async function submitLogin() {
     const username = document.getElementById('login-name').value.trim();
     const password = document.getElementById('login-password').value;
-    document.getElementById('login-error').style.display = 'none';
-    if (!username || !password) { showLoginError('Please enter your name and password.'); return; }
+    document.getElementById('login-error').textContent = '';
+    if (!username) { showLoginError('Please select your name.'); return; }
+    if (!password) { showLoginError('Please enter your password.'); return; }
     try {
       const res  = await fetch(`${AUTH_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
       const data = await res.json();
@@ -458,7 +515,7 @@
     }
   }
 
-  document.getElementById('login-password').addEventListener('keydown', function(e) {
+  document.getElementById('login-password').addEventListener('keydown', e => {
     if (e.key === 'Enter') submitLogin();
   });
 
