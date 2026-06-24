@@ -201,7 +201,24 @@
 </head>
 <body>
 
-<div class="header">
+<!-- ── Login Overlay ── -->
+<div id="login-overlay" style="position:fixed;inset:0;z-index:1000;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+  <img src="rosemary-logo.jpg" style="width:140px;border-radius:8px;margin-bottom:24px" alt="Rosemary Villas">
+  <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:28px;max-width:320px;width:100%;">
+    <div style="font-size:16px;font-weight:600;color:#f0f0f0;margin-bottom:20px;">Admin Sign In</div>
+    <input id="login-name" type="text" placeholder="Your name"
+      style="width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;padding:12px 14px;color:#f0f0f0;font-family:inherit;font-size:14px;margin-bottom:10px;outline:none;">
+    <input id="login-password" type="password" placeholder="Password"
+      style="width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;padding:12px 14px;color:#f0f0f0;font-family:inherit;font-size:14px;margin-bottom:16px;outline:none;">
+    <button onclick="submitLogin()"
+      style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;border-radius:8px;color:#f0f0f0;padding:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;">
+      Sign In
+    </button>
+    <div id="login-error" style="font-size:12px;color:#b24a3a;margin-top:10px;display:none;"></div>
+  </div>
+</div>
+
+<div class="header" style="display:none;">
   <div class="brand">
     <img src="rosemary-logo.jpg" alt="Rosemary Villas at Chenal" style="height:32px;width:auto;border-radius:6px;display:block;">
     <div style="margin-left:12px;">
@@ -215,7 +232,7 @@
   </div>
 </div>
 
-<div class="page">
+<div class="page" style="display:none;">
   <div id="main-content">
     <div class="loading-overlay">Loading dashboard…</div>
   </div>
@@ -401,8 +418,67 @@
     }
   }
 
-  loadDashboard();
-  setInterval(loadDashboard, REFRESH_INTERVAL_MS);
+  // ── Auth ──────────────────────────────────────────────────────
+  const AUTH_URL = 'https://script.google.com/macros/s/AKfycbx2dAQwXeR-wnCpY1jlFzwkWtUF9OGNGzB4Y2nDn3jGfGxksVOuxh18--BIgrZ9umkz/exec';
+
+  function showMainContent() {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.querySelector('.header').style.display = '';
+    document.querySelector('.page').style.display = '';
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('login-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  async function submitLogin() {
+    const username = document.getElementById('login-name').value.trim();
+    const password = document.getElementById('login-password').value;
+    document.getElementById('login-error').style.display = 'none';
+    if (!username || !password) { showLoginError('Please enter your name and password.'); return; }
+    try {
+      const res  = await fetch(`${AUTH_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
+      const data = await res.json();
+      if (data.success) {
+        if (data.user.role !== 'Admin') {
+          showLoginError('Admin access required.');
+        } else {
+          sessionStorage.setItem('rv_session', JSON.stringify(data.user));
+          showMainContent();
+          loadDashboard();
+          setInterval(loadDashboard, REFRESH_INTERVAL_MS);
+        }
+      } else {
+        showLoginError(data.error || 'Login failed.');
+      }
+    } catch(err) {
+      showLoginError('Network error. Please try again.');
+    }
+  }
+
+  document.getElementById('login-password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitLogin();
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const raw = sessionStorage.getItem('rv_session');
+    if (raw) {
+      try {
+        const user = JSON.parse(raw);
+        if (user.role === 'Admin') {
+          showMainContent();
+          loadDashboard();
+          setInterval(loadDashboard, REFRESH_INTERVAL_MS);
+        } else {
+          showLoginError('Admin access required.');
+        }
+      } catch(e) {
+        sessionStorage.removeItem('rv_session');
+      }
+    }
+  });
 </script>
 </body>
 </html>
