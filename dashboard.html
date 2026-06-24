@@ -4,33 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rosemary Staff Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg:          #f5f1ea;
-      --surface:     #faf8f3;
-      --surface2:    #f2ede3;
-      --surface3:    #ebe6db;
-      --border:      #cdcaba;
-      --text:        #1a1f1c;
-      --text-dim:    #2f3a33;
-      --text-dimmer: #5e6e63;
-      --sand:        #6d6559;
-      --gold:        #8c7342;
-      --sage:        #5a8a5e;
-      --sage-dk:     #4a7550;
-      --coral:       #b24a3a;
-      --yellow:      #b9923e;
-    }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
       min-height: 100vh;
     }
 
@@ -40,294 +20,193 @@
       align-items: center;
       justify-content: space-between;
       padding: 18px 28px;
-      border-bottom: 1px solid rgba(205,202,186,0.55);
-      background: rgba(245,241,234,0.96);
-      backdrop-filter: blur(18px);
+      border-bottom: 1px solid #2a2a2a;
+      background: #0f0f0f;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
-    .brand-lockup { display: flex; align-items: center; gap: 14px; }
-    .brand-text   { display: flex; flex-direction: column; gap: 1px; }
-    .header-logo  {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      letter-spacing: 3px;
-      color: var(--text);
-      line-height: 1;
-      text-transform: uppercase;
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700; letter-spacing: -0.5px; color: #fff;
     }
-    .header-kicker {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      color: var(--gold);
-      text-transform: uppercase;
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .brand-name   { font-size: 16px; font-weight: 600; color: #f0f0f0; }
+    .brand-kicker { font-size: 11px; color: #555; margin-top: 1px; }
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    #last-updated { font-size: 12px; color: #555; }
     .refresh-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      color: var(--sand);
-      padding: 8px 16px;
-      font-size: 13px;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: background 0.15s;
+      background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
+      color: #888; padding: 7px 14px; font-size: 13px;
+      font-family: inherit; cursor: pointer; transition: background 0.15s, color 0.15s;
     }
-    .refresh-btn:hover { background: var(--surface3); }
-    #last-updated { font-size: 12px; color: var(--text-dimmer); }
+    .refresh-btn:hover { background: #222; color: #f0f0f0; border-color: #3a3a3a; }
 
-    /* ── Page shell ── */
+    /* ── Page ── */
     .page { max-width: 1080px; margin: 0 auto; padding: 32px 28px 64px; }
 
     /* ── Sections ── */
     .section { margin-bottom: 40px; }
     .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: 1.5px;
-      color: var(--sand);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #555; margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 1px solid #1e1e1e;
+      display: flex; align-items: center; gap: 10px;
     }
     .section-count {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 2px 10px;
-      color: var(--text-dimmer);
-      letter-spacing: 0;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 999px; padding: 2px 9px;
+      font-size: 11px; color: #666; letter-spacing: 0; text-transform: none;
     }
 
-    /* ── PTO tracker cards ── */
+    /* ── PTO cards ── */
     .pto-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
     .pto-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px 18px;
-      cursor: pointer;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 12px; padding: 18px 16px;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
     }
-    .pto-card:hover {
-      border-color: var(--sage);
-      box-shadow: 0 4px 16px rgba(90,138,94,0.1);
-    }
+    .pto-card:hover { background: #222; border-color: #3a3a3a; }
     .pto-card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--gold);
-      margin-bottom: 10px;
+      font-size: 15px; font-weight: 600; color: #f0f0f0; margin-bottom: 10px;
     }
     .pto-days {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 38px;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 2px;
+      font-size: 34px; font-weight: 700; color: #f0f0f0;
+      line-height: 1; margin-bottom: 2px;
     }
     .pto-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      margin-bottom: 12px;
+      font-size: 11px; color: #555;
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px;
     }
     .pto-bar-wrap {
-      background: var(--surface3);
-      border-radius: 4px;
-      height: 4px;
-      overflow: hidden;
-      margin-bottom: 6px;
+      background: #2a2a2a; border-radius: 4px;
+      height: 3px; overflow: hidden; margin-bottom: 6px;
     }
-    .pto-bar        { height: 4px; border-radius: 4px; background: var(--sage); transition: width 0.4s; }
-    .pto-bar.warn   { background: var(--yellow); }
-    .pto-bar.over   { background: var(--coral); }
-    .pto-hint {
-      font-size: 11px;
-      color: var(--text-dimmer);
-    }
+    .pto-bar       { height: 3px; border-radius: 4px; background: #888; transition: width 0.4s; }
+    .pto-bar.warn  { background: #b9923e; }
+    .pto-bar.over  { background: #b24a3a; }
+    .pto-hint      { font-size: 11px; color: #555; }
     .pto-detail {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      display: none;
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid #2a2a2a; display: none;
     }
     .pto-detail.open { display: block; }
     .pto-detail-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-dim);
-      padding: 5px 0;
-      border-bottom: 1px solid var(--surface3);
-      gap: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: #888; padding: 5px 0;
+      border-bottom: 1px solid #1f1f1f; gap: 8px;
     }
     .pto-detail-row:last-child { border-bottom: none; }
-    .pto-detail-meta { color: var(--text-dimmer); }
 
     /* ── Tables ── */
     .table-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 12px; overflow: hidden;
     }
     .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .data-table th {
-      text-align: left;
-      padding: 11px 16px;
-      background: var(--surface2);
-      color: var(--text-dimmer);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
+      text-align: left; padding: 10px 16px;
+      background: #141414; color: #555;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid #2a2a2a;
     }
     .data-table td {
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--surface3);
-      color: var(--text-dim);
-      vertical-align: top;
+      padding: 12px 16px; border-bottom: 1px solid #1f1f1f;
+      color: #c0c0c0; vertical-align: top;
     }
     .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: rgba(245,241,234,0.6); }
-    .data-table td strong { color: var(--text); font-weight: 600; }
+    .data-table tr:hover td { background: #1f1f1f; }
+    .data-table td strong { color: #f0f0f0; font-weight: 600; }
 
     /* ── Badges ── */
     .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      white-space: nowrap;
+      display: inline-flex; align-items: center;
+      padding: 2px 9px; border-radius: 999px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
     }
-    .badge-pending   { background: rgba(185,146,62,0.12); color: var(--yellow); border: 1px solid rgba(185,146,62,0.25); }
-    .badge-approved  { background: rgba(90,138,94,0.12);  color: var(--sage);   border: 1px solid rgba(90,138,94,0.25); }
-    .badge-rejected  { background: rgba(178,74,58,0.10);  color: var(--coral);  border: 1px solid rgba(178,74,58,0.22); }
-    .badge-submitted { background: rgba(90,138,94,0.10);  color: var(--sage);   border: 1px solid rgba(90,138,94,0.22); }
-    .badge-yes       { background: rgba(90,138,94,0.12);  color: var(--sage);   border: 1px solid rgba(90,138,94,0.25); }
-    .badge-no        { background: rgba(178,74,58,0.10);  color: var(--coral);  border: 1px solid rgba(178,74,58,0.22); }
+    .badge-pending   { background: #2d2200; color: #b9923e; border: 1px solid #4d3800; }
+    .badge-approved  { background: #0e2010; color: #5a8a5e; border: 1px solid #1e4020; }
+    .badge-rejected  { background: #2a1010; color: #b24a3a; border: 1px solid #4f1e1e; }
+    .badge-submitted { background: #0e2010; color: #5a8a5e; border: 1px solid #1e4020; }
+    .badge-yes       { background: #0e2010; color: #5a8a5e; border: 1px solid #1e4020; }
+    .badge-no        { background: #2a1010; color: #b24a3a; border: 1px solid #4f1e1e; }
 
-    /* ── Employee report-status grid ── */
+    /* ── Report status grid ── */
     .emp-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
     .emp-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 12px; padding: 18px 16px;
     }
-    .emp-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--gold);
-      margin-bottom: 10px;
-    }
+    .emp-name { font-size: 15px; font-weight: 600; color: #f0f0f0; margin-bottom: 10px; }
     .emp-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-dimmer);
-      margin-bottom: 7px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: #666; margin-bottom: 7px;
     }
     .emp-row:last-child { margin-bottom: 0; }
 
     /* ── Month tabs ── */
-    .month-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .month-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
     .month-tab {
-      padding: 7px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-dimmer);
-      transition: all 0.15s;
-      font-family: 'DM Sans', sans-serif;
+      padding: 6px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      border: 1px solid #2a2a2a; background: #1a1a1a; color: #888;
+      font-family: inherit; transition: all 0.15s;
     }
-    .month-tab:hover   { border-color: var(--sage); color: var(--text); }
-    .month-tab.active  { background: var(--sage); border-color: var(--sage); color: #fff; }
+    .month-tab:hover   { background: #222; border-color: #3a3a3a; color: #f0f0f0; }
+    .month-tab.active  { background: #222; border-color: #3a3a3a; color: #f0f0f0; font-weight: 600; }
 
     .report-panels { display: flex; flex-direction: column; gap: 24px; }
     .report-panel-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 16px;
-      letter-spacing: 1px;
-      color: var(--sand);
-      margin-bottom: 10px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #555; margin-bottom: 10px;
     }
 
     /* ── Empty / loading ── */
     .empty-row td {
-      text-align: center;
-      color: var(--text-dimmer);
-      padding: 32px;
-      font-style: italic;
+      text-align: center; color: #444;
+      padding: 32px; font-style: italic;
     }
     .loading-overlay {
-      text-align: center;
-      padding: 80px 0;
-      color: var(--text-dimmer);
-      font-size: 14px;
+      text-align: center; padding: 80px 0;
+      color: #444; font-size: 14px;
       animation: pulse 1.4s ease-in-out infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .error-msg {
-      background: #fce8e8;
-      border: 1px solid #f0b0b0;
-      border-radius: 12px;
-      padding: 20px;
-      color: var(--coral);
-      font-size: 14px;
-      text-align: center;
+      background: #1a0a0a; border: 1px solid #3a1010;
+      border-radius: 12px; padding: 20px;
+      color: #b24a3a; font-size: 14px; text-align: center;
     }
     .truncate {
-      max-width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      max-width: 200px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
     }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
 <div class="header">
-  <div class="brand-lockup">
-    <div class="brand-text">
-      <div class="header-logo">Rosemary Villas</div>
-      <div class="header-kicker">Staff Dashboard · Admin</div>
+  <div class="brand">
+    <div class="brand-mark">A</div>
+    <div>
+      <div class="brand-name">Rosemary Staff</div>
+      <div class="brand-kicker">Admin Dashboard</div>
     </div>
   </div>
   <div class="header-right">
@@ -351,171 +230,125 @@
   let _data        = null;
   let _activeMonth = null;
 
-  // ── Helpers ──────────────────────────────────────────────────
   function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
   function fmtDate(s) {
-    if (!s || s === 'undefined') return '—';
-    const d = new Date(s + (s.length === 10 ? 'T00:00:00' : ''));
+    if (!s || s==='undefined') return '—';
+    const d = new Date(s + (s.length===10 ? 'T00:00:00' : ''));
     if (isNaN(d)) return s;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
   }
   function fmtMonth(key) {
-    const [y, m] = key.split('-');
-    return new Date(+y, +m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const [y,m] = key.split('-');
+    return new Date(+y,+m-1,1).toLocaleDateString('en-US', { month:'long', year:'numeric' });
   }
-  function badge(text, cls) {
-    return `<span class="badge badge-${cls}">${esc(text)}</span>`;
-  }
+  function badge(text, cls) { return `<span class="badge badge-${cls}">${esc(text)}</span>`; }
   function badgeStatus(s) {
-    const l = (s || '').toLowerCase();
-    if (l === 'approved') return badge('Approved', 'approved');
-    if (l === 'rejected') return badge('Rejected', 'rejected');
-    return badge('Pending', 'pending');
+    const l = (s||'').toLowerCase();
+    if (l==='approved') return badge('Approved','approved');
+    if (l==='rejected') return badge('Rejected','rejected');
+    return badge('Pending','pending');
   }
 
   // ── PTO tracker ───────────────────────────────────────────────
   function renderPTOTracker(ptoByEmployee) {
-    const cards = EMPLOYEES.map(emp => {
-      const info = (ptoByEmployee && ptoByEmployee[emp]) || { days: 0, requests: [] };
-      const days = info.days || 0;
-      const pct  = Math.min(100, Math.round(days / PTO_ANNUAL_DAYS * 100));
-      const cls  = pct >= 100 ? 'over' : pct >= 80 ? 'warn' : '';
-      const reqs = info.requests || [];
-
+    return '<div class="pto-grid">' + EMPLOYEES.map(emp => {
+      const info = (ptoByEmployee&&ptoByEmployee[emp]) || {days:0,requests:[]};
+      const days = info.days||0;
+      const pct  = Math.min(100, Math.round(days/PTO_ANNUAL_DAYS*100));
+      const cls  = pct>=100 ? 'over' : pct>=80 ? 'warn' : '';
+      const reqs = info.requests||[];
       const rows = reqs.length
-        ? reqs.map(r => `
+        ? reqs.map(r=>`
             <div class="pto-detail-row">
               <span>${esc(fmtDate(r.startDate))} – ${esc(fmtDate(r.endDate))}</span>
-              <span class="pto-detail-meta" style="display:flex;align-items:center;gap:8px;">
-                <span>${r.days}d · ${esc(r.type)}</span>
+              <span style="display:flex;align-items:center;gap:6px">
+                <span style="color:#666">${r.days}d · ${esc(r.type)}</span>
                 ${badgeStatus(r.status)}
               </span>
             </div>`).join('')
-        : '<div style="font-size:12px;color:var(--text-dimmer);padding:4px 0">No PTO this year</div>';
-
+        : '<div style="font-size:12px;color:#444;padding:4px 0">No PTO this year</div>';
       return `
         <div class="pto-card" onclick="togglePTO('${esc(emp)}')">
           <div class="pto-card-name">${esc(emp)}</div>
           <div class="pto-days">${days}</div>
           <div class="pto-label">days used · ${new Date().getFullYear()}</div>
-          <div class="pto-bar-wrap">
-            <div class="pto-bar ${cls}" style="width:${pct}%"></div>
-          </div>
+          <div class="pto-bar-wrap"><div class="pto-bar ${cls}" style="width:${pct}%"></div></div>
           <div class="pto-hint">${days} of ${PTO_ANNUAL_DAYS} days (${pct}%)</div>
           <div class="pto-detail" id="pto-d-${esc(emp)}">${rows}</div>
         </div>`;
-    }).join('');
-    return `<div class="pto-grid">${cards}</div>`;
+    }).join('') + '</div>';
   }
 
   function togglePTO(emp) {
-    const el = document.getElementById('pto-d-' + emp);
+    const el = document.getElementById('pto-d-'+emp);
     if (el) el.classList.toggle('open');
   }
 
-  // ── Pending PTO table ─────────────────────────────────────────
+  // ── Pending PTO ───────────────────────────────────────────────
   function renderPendingPTO(list) {
-    if (!list || !list.length) {
-      return `<div class="table-wrap"><table class="data-table">
-        <thead><tr><th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th></tr></thead>
-        <tbody><tr class="empty-row"><td colspan="6">No pending PTO requests 🎉</td></tr></tbody>
-      </table></div>`;
+    const thead = '<thead><tr><th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th></tr></thead>';
+    if (!list||!list.length) {
+      return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="6">No pending PTO requests 🎉</td></tr></tbody></table></div>`;
     }
-    const rows = list.map(r => `<tr>
+    const rows = list.map(r=>`<tr>
       <td><strong>${esc(r.employee)}</strong></td>
       <td>${esc(fmtDate(r.startDate))}</td>
       <td>${esc(fmtDate(r.endDate))}</td>
       <td>${esc(r.type)}</td>
-      <td class="truncate" title="${esc(r.notes)}">${esc(r.notes) || '<span style="color:var(--text-dimmer)">—</span>'}</td>
+      <td class="truncate" title="${esc(r.notes)}">${esc(r.notes)||'<span style="color:#444">—</span>'}</td>
       <td>${badgeStatus(r.status)}</td>
     </tr>`).join('');
-    return `<div class="table-wrap"><table class="data-table">
-      <thead><tr><th>Employee</th><th>Start</th><th>End</th><th>Type</th><th>Notes</th><th>Status</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>`;
+    return `<div class="table-wrap"><table class="data-table">${thead}<tbody>${rows}</tbody></table></div>`;
   }
 
-  // ── Report status grid ────────────────────────────────────────
+  // ── Report status ─────────────────────────────────────────────
   function renderReportStatus(weekly, monthly) {
-    const cards = EMPLOYEES.map(emp => `
+    return '<div class="emp-grid">' + EMPLOYEES.map(emp=>`
       <div class="emp-card">
         <div class="emp-name">${esc(emp)}</div>
-        <div class="emp-row">
-          <span>Weekly Report</span>
-          ${weekly && weekly[emp] ? badge('Submitted','yes') : badge('Missing','no')}
-        </div>
-        <div class="emp-row">
-          <span>Monthly Report</span>
-          ${monthly && monthly[emp] ? badge('Submitted','yes') : badge('Missing','no')}
-        </div>
-      </div>`).join('');
-    return `<div class="emp-grid">${cards}</div>`;
+        <div class="emp-row"><span>Weekly Report</span>${weekly&&weekly[emp]?badge('Submitted','yes'):badge('Missing','no')}</div>
+        <div class="emp-row"><span>Monthly Report</span>${monthly&&monthly[emp]?badge('Submitted','yes'):badge('Missing','no')}</div>
+      </div>`).join('') + '</div>';
   }
 
   // ── Month drill-down ─────────────────────────────────────────
   function renderMonthSection(reportsByMonth) {
-    const months = Object.keys(reportsByMonth || {}).sort().reverse();
-    if (!months.length) {
-      return `<p style="color:var(--text-dimmer);padding:16px 0">No reports submitted yet.</p>`;
-    }
-    if (!_activeMonth || !reportsByMonth[_activeMonth]) _activeMonth = months[0];
-
-    const tabs = months.map(m => `
-      <div class="month-tab ${m === _activeMonth ? 'active' : ''}" onclick="selectMonth('${m}')">${fmtMonth(m)}</div>
-    `).join('');
-
-    return `
-      <div class="month-tabs">${tabs}</div>
-      <div id="month-panel">${renderMonthPanel(reportsByMonth[_activeMonth] || {})}</div>`;
+    const months = Object.keys(reportsByMonth||{}).sort().reverse();
+    if (!months.length) return '<p style="color:#444;padding:16px 0;font-size:13px">No reports submitted yet.</p>';
+    if (!_activeMonth||!reportsByMonth[_activeMonth]) _activeMonth = months[0];
+    const tabs = months.map(m=>`<button class="month-tab ${m===_activeMonth?'active':''}" onclick="selectMonth('${m}')">${fmtMonth(m)}</button>`).join('');
+    return `<div class="month-tabs">${tabs}</div><div id="month-panel">${renderMonthPanel(reportsByMonth[_activeMonth]||{})}</div>`;
   }
 
   function selectMonth(key) {
     if (!_data) return;
     _activeMonth = key;
-    document.querySelectorAll('.month-tab').forEach(t => {
-      t.classList.toggle('active', t.textContent.trim() === fmtMonth(key));
-    });
-    document.getElementById('month-panel').innerHTML =
-      renderMonthPanel((_data.reportsByMonth || {})[key] || {});
+    document.querySelectorAll('.month-tab').forEach(t => t.classList.toggle('active', t.textContent.trim()===fmtMonth(key)));
+    document.getElementById('month-panel').innerHTML = renderMonthPanel((_data.reportsByMonth||{})[key]||{});
   }
 
-  function renderMonthPanel(monthData) {
-    const weeklies  = monthData.weekly  || [];
-    const monthlies = monthData.monthly || [];
+  function renderMonthPanel(d) {
+    const w = d.weekly||[], m = d.monthly||[];
 
-    // weekly table
-    let wHtml;
-    if (!weeklies.length) {
-      wHtml = `<div class="table-wrap"><table class="data-table">
-        <thead><tr><th>Employee</th><th>Week Ending</th><th>Hours</th><th>Tasks</th><th>Maintenance</th><th>Needs Attention</th></tr></thead>
-        <tbody><tr class="empty-row"><td colspan="6">No weekly reports this month</td></tr></tbody>
-      </table></div>`;
-    } else {
-      const rows = weeklies.map(r => `<tr>
+    function weeklyTable() {
+      const thead = '<thead><tr><th>Employee</th><th>Week Ending</th><th>Hours</th><th>Tasks</th><th>Maintenance</th><th>Needs Attention</th></tr></thead>';
+      if (!w.length) return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="6">No weekly reports this month</td></tr></tbody></table></div>`;
+      return `<div class="table-wrap"><table class="data-table">${thead}<tbody>${w.map(r=>`<tr>
         <td><strong>${esc(r.employee)}</strong></td>
         <td>${esc(fmtDate(r.weekEnding))}</td>
         <td>${esc(r.hoursWorked)}</td>
         <td class="truncate" title="${esc(r.tasks)}">${esc(r.tasks)||'—'}</td>
         <td class="truncate" title="${esc(r.maintenance)}">${esc(r.maintenance)||'—'}</td>
         <td class="truncate" title="${esc(r.attention)}">${esc(r.attention)||'—'}</td>
-      </tr>`).join('');
-      wHtml = `<div class="table-wrap"><table class="data-table">
-        <thead><tr><th>Employee</th><th>Week Ending</th><th>Hours</th><th>Tasks</th><th>Maintenance</th><th>Needs Attention</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>`;
+      </tr>`).join('')}</tbody></table></div>`;
     }
 
-    // monthly table
-    let mHtml;
-    if (!monthlies.length) {
-      mHtml = `<div class="table-wrap"><table class="data-table">
-        <thead><tr><th>Employee</th><th>Month</th><th>Hours</th><th>PTO Days</th><th>Open Maint.</th><th>Notable Events</th><th>Needs Attention</th></tr></thead>
-        <tbody><tr class="empty-row"><td colspan="7">No monthly reports this month</td></tr></tbody>
-      </table></div>`;
-    } else {
-      const rows = monthlies.map(r => `<tr>
+    function monthlyTable() {
+      const thead = '<thead><tr><th>Employee</th><th>Month</th><th>Hours</th><th>PTO Days</th><th>Open Maint.</th><th>Notable Events</th><th>Needs Attention</th></tr></thead>';
+      if (!m.length) return `<div class="table-wrap"><table class="data-table">${thead}<tbody><tr class="empty-row"><td colspan="7">No monthly reports this month</td></tr></tbody></table></div>`;
+      return `<div class="table-wrap"><table class="data-table">${thead}<tbody>${m.map(r=>`<tr>
         <td><strong>${esc(r.employee)}</strong></td>
         <td>${esc(r.month)}</td>
         <td>${esc(r.totalHours)}</td>
@@ -523,53 +356,34 @@
         <td class="truncate" title="${esc(r.maintenance)}">${esc(r.maintenance)||'—'}</td>
         <td class="truncate" title="${esc(r.events)}">${esc(r.events)||'—'}</td>
         <td class="truncate" title="${esc(r.attention)}">${esc(r.attention)||'—'}</td>
-      </tr>`).join('');
-      mHtml = `<div class="table-wrap"><table class="data-table">
-        <thead><tr><th>Employee</th><th>Month</th><th>Hours</th><th>PTO Days</th><th>Open Maint.</th><th>Notable Events</th><th>Needs Attention</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>`;
+      </tr>`).join('')}</tbody></table></div>`;
     }
 
     return `<div class="report-panels">
-      <div>
-        <div class="report-panel-title">Weekly Reports <span style="font-family:'DM Sans';font-size:12px;color:var(--text-dimmer);letter-spacing:0">(${weeklies.length})</span></div>
-        ${wHtml}
-      </div>
-      <div>
-        <div class="report-panel-title">Monthly Reports <span style="font-family:'DM Sans';font-size:12px;color:var(--text-dimmer);letter-spacing:0">(${monthlies.length})</span></div>
-        ${mHtml}
-      </div>
+      <div><div class="report-panel-title">Weekly Reports (${w.length})</div>${weeklyTable()}</div>
+      <div><div class="report-panel-title">Monthly Reports (${m.length})</div>${monthlyTable()}</div>
     </div>`;
   }
 
   // ── Main render ───────────────────────────────────────────────
   function renderDashboard(data) {
     _data = data;
-    const now = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    document.getElementById('last-updated').textContent = 'Updated ' + now;
+    document.getElementById('last-updated').textContent =
+      'Updated ' + new Date().toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'});
 
     document.getElementById('main-content').innerHTML = `
       <div class="section">
-        <div class="section-title">
-          PTO Tracker — ${new Date().getFullYear()}
-          <span style="font-family:'DM Sans';font-size:11px;color:var(--text-dimmer);font-weight:400;letter-spacing:0;text-transform:none">click to expand</span>
-        </div>
+        <div class="section-title">PTO Tracker — ${new Date().getFullYear()} <span style="font-size:10px;color:#444;text-transform:none;letter-spacing:0;font-weight:400">click to expand</span></div>
         ${renderPTOTracker(data.ptoByEmployee)}
       </div>
-
       <div class="section">
-        <div class="section-title">
-          Pending PTO
-          <span class="section-count">${(data.pendingPTO || []).length}</span>
-        </div>
+        <div class="section-title">Pending PTO <span class="section-count">${(data.pendingPTO||[]).length}</span></div>
         ${renderPendingPTO(data.pendingPTO)}
       </div>
-
       <div class="section">
         <div class="section-title">Report Status — This Period</div>
         ${renderReportStatus(data.weeklyStatus, data.monthlyStatus)}
       </div>
-
       <div class="section">
         <div class="section-title">Reports by Month</div>
         ${renderMonthSection(data.reportsByMonth)}
@@ -578,18 +392,16 @@
   }
 
   function renderError(msg) {
-    document.getElementById('main-content').innerHTML =
-      `<div class="error-msg">⚠️ ${esc(msg)}</div>`;
+    document.getElementById('main-content').innerHTML = `<div class="error-msg">⚠️ ${esc(msg)}</div>`;
   }
 
-  // ── Fetch ─────────────────────────────────────────────────────
   async function loadDashboard() {
     try {
       const res  = await fetch(WEB_APP_URL + '?action=getDetailedDashboard');
       const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Unknown error');
+      if (!data.success) throw new Error(data.error||'Unknown error');
       renderDashboard(data);
-    } catch (err) {
+    } catch(err) {
       renderError('Could not load dashboard: ' + err.message);
     }
   }
